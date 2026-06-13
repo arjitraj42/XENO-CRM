@@ -297,14 +297,14 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen text-[#e2e8f0] overflow-hidden font-sans" style={{background: 'linear-gradient(135deg, #05071a 0%, #070b22 40%, #060918 100%)'}}>
+    <div className="flex h-screen overflow-hidden font-sans" style={{background: '#f1f5f9', color: '#0f172a'}}>
       
       {/* Toast Notification */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border border-zinc-800 bg-[#121214]/90 backdrop-blur-md shadow-2xl animate-slide-up glow-blue">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border bg-white/97 backdrop-blur-md shadow-2xl animate-slide-up" style={{borderColor: 'rgba(99,102,241,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(99,102,241,0.08)'}}>
           <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-sm font-medium text-zinc-100">{notification.message}</span>
-          <button onClick={() => setNotification(null)} className="ml-2 text-zinc-500 hover:text-zinc-300">
+          <span className="text-sm font-medium text-slate-800">{notification.message}</span>
+          <button onClick={() => setNotification(null)} className="ml-2 text-slate-400 hover:text-slate-700">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -337,8 +337,8 @@ export default function App() {
                 HQ
               </div>
               <div className="flex-1 overflow-hidden">
-                <p className="text-xs font-bold text-zinc-200 truncate">Enterprise Workspace</p>
-                <p className="text-[10px] text-zinc-500 font-mono">Premium Hub</p>
+                <p className="text-xs font-bold text-slate-100 truncate">Enterprise Workspace</p>
+                <p className="text-[10px] font-mono" style={{color: 'rgba(165,180,252,0.8)'}}>Premium Hub</p>
               </div>
             </div>
           )}
@@ -419,19 +419,19 @@ export default function App() {
       </aside>
 
       {/* Main Workspace Container */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto" style={{background: 'transparent'}}>
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto" style={{background: '#f1f5f9'}}>
         
         {/* Header */}
         <header className="h-16 border-b border-zinc-850 px-8 flex items-center justify-between shrink-0 glass-panel sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition md:block hidden"
+              className="p-1 rounded bg-white border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition md:block hidden"
               title="Toggle Sidebar"
             >
               <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? '' : 'rotate-180'}`} />
             </button>
-            <h2 className="text-lg font-bold tracking-tight text-white capitalize flex items-center gap-2">
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 capitalize flex items-center gap-2">
               {activeTab === 'data-manager' ? 'Data Manager' : activeTab === 'ai-assistant' ? '✨ Xeno AI Assistant' : `${activeTab}`}
             </h2>
           </div>

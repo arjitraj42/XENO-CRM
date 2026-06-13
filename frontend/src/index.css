@@ -4,171 +4,189 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Zero Gravity Space Background ─────────────────────────── */
+/* ─── Light Base ─────────────────────────────────────────────── */
 @layer base {
   body {
-    background-color: #05071a;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(63, 88, 228, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(99, 60, 220, 0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(30, 45, 120, 0.05) 0%, transparent 70%);
-    color: #e2e8f0;
+    background-color: #f1f5f9;
+    color: #0f172a;
     font-family: 'Inter', 'Outfit', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    position: relative;
-  }
-
-  /* Starfield layer */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.55) 0%, transparent 100%),
-      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.35) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 40% 8%, rgba(200,220,255,0.45) 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 72% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 85% 35%, rgba(200,210,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 92% 65%, rgba(255,255,255,0.45) 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 92%, rgba(255,255,255,0.25) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 5% 50%, rgba(180,200,255,0.35) 0%, transparent 100%),
-      radial-gradient(1px 1px at 78% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 65% 10%, rgba(255,255,255,0.35) 0%, transparent 100%),
-      radial-gradient(1px 1px at 88% 5%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 45% 60%, rgba(190,210,255,0.25) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  * {
-    position: relative;
-    z-index: 1;
   }
 }
 
 /* ─── Custom Scrollbar ───────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #050717; }
-::-webkit-scrollbar-thumb { background: #1e2a5e; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #2d3e80; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #a5b4fc; }
 
-/* ─── Sidebar — Deep Navy ────────────────────────────────────── */
+/* ─── Sidebar — Deep Indigo (Contrast) ───────────────────────── */
 .sidebar-navy {
-  background: linear-gradient(180deg, #070c20 0%, #080d22 60%, #06091a 100%);
-  border-right: 1px solid rgba(99, 120, 255, 0.12);
-  box-shadow: 4px 0 40px rgba(63, 88, 228, 0.08);
+  background: linear-gradient(180deg, #1e1b4b 0%, #1e1b4b 60%, #18174a 100%);
+  border-right: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 4px 0 32px rgba(99, 102, 241, 0.12);
 }
 
-/* ─── Glassmorphism Panels ───────────────────────────────────── */
+/* ─── Glass Panel (Header) — White ──────────────────────────── */
 .glass-panel {
-  background: rgba(7, 10, 30, 0.85);
+  background: rgba(255, 255, 255, 0.97) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(99, 120, 255, 0.1);
-  box-shadow: 0 1px 0 rgba(99, 120, 255, 0.08);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
 }
 
+/* ─── Glass Cards — White with Indigo Accent ─────────────────── */
 .glass-card {
-  background: rgba(10, 14, 40, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(99, 120, 255, 0.1);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(99, 102, 241, 0.1) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(99, 102, 241, 0.04) inset !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #0f172a;
 }
 
 .glass-card:hover {
-  border-color: rgba(99, 120, 255, 0.22);
-  transform: translateY(-3px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(63, 88, 228, 0.07),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(99, 102, 241, 0.07) !important;
 }
 
-/* ─── Indigo Accent Line — glow between elements ─────────────── */
-.indigo-accent-line {
-  background: linear-gradient(90deg, transparent, rgba(99, 120, 255, 0.6), transparent);
-  height: 1px;
-  box-shadow: 0 0 8px rgba(99, 120, 255, 0.4);
+/* ─── Content Area Global Light Overrides ────────────────────── */
+main {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
-/* ─── Nav Active State — deep indigo glow ────────────────────── */
-.nav-active {
-  background: linear-gradient(90deg, rgba(63, 88, 228, 0.18) 0%, rgba(63, 88, 228, 0.06) 100%);
-  border-left: 2px solid #6378ff;
-  box-shadow: inset 0 0 20px rgba(63, 88, 228, 0.08), 2px 0 0 #6378ff;
+/* Override ALL dark arbitrary-value backgrounds inside main */
+main [class*="bg-\[#09090b\]"],
+main [class*="bg-\[#121214\]"],
+main [class*="bg-\[#0c0c0d\]"],
+main [class*="bg-\[#161619\]"] {
+  background-color: #ffffff !important;
 }
 
-/* ─── Metric Card Floating ───────────────────────────────────── */
-.metric-card {
-  background: rgba(8, 12, 35, 0.7);
-  border: 1px solid rgba(99, 120, 255, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 0 30px rgba(63, 88, 228, 0.05);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: floatCard 8s ease-in-out infinite;
+/* Override zinc backgrounds in content */
+main .bg-zinc-900,
+main [class*="bg-zinc-9"] {
+  background-color: #f8fafc !important;
+}
+main .bg-zinc-800,
+main [class*="bg-zinc-8"] {
+  background-color: #f1f5f9 !important;
+}
+main .bg-zinc-950,
+main [class*="bg-zinc-95"] {
+  background-color: #ffffff !important;
 }
 
-.metric-card:hover {
-  transform: translateY(-5px) scale(1.01);
-  border-color: rgba(99, 120, 255, 0.28);
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(63, 88, 228, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+/* Form inputs always white */
+main input,
+main select,
+main textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
 }
 
-/* ─── Hover Accent Glows ─────────────────────────────────────── */
+main input::placeholder,
+main textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+main select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+/* Override light-grey/invisible text on light bg */
+main .text-zinc-500 { color: #64748b !important; }
+main .text-zinc-400 { color: #64748b !important; }
+main .text-zinc-300 { color: #475569 !important; }
+main .text-zinc-200 { color: #334155 !important; }
+main .text-zinc-100 { color: #1e293b !important; }
+main .text-white    { color: #0f172a !important; }
+main .text-zinc-350 { color: #475569 !important; }
+main .text-zinc-250 { color: #334155 !important; }
+main .text-zinc-450 { color: #64748b !important; }
+main .text-zinc-550 { color: #475569 !important; }
+
+/* Keep accent colors */
+main .text-blue-400   { color: #3b82f6 !important; }
+main .text-blue-500   { color: #2563eb !important; }
+main .text-indigo-400 { color: #6366f1 !important; }
+main .text-violet-400 { color: #8b5cf6 !important; }
+main .text-emerald-400{ color: #10b981 !important; }
+main .text-amber-400  { color: #f59e0b !important; }
+main .text-rose-400   { color: #f43f5e !important; }
+main .text-teal-400   { color: #14b8a6 !important; }
+
+/* Keep colored background badges/chips */
+main .bg-blue-500\/10 { background-color: rgba(59,130,246,0.1) !important; }
+main .bg-emerald-500\/10 { background-color: rgba(16,185,129,0.1) !important; }
+main .bg-amber-500\/10 { background-color: rgba(245,158,11,0.1) !important; }
+main .bg-rose-500\/10 { background-color: rgba(244,63,94,0.1) !important; }
+main .bg-violet-500\/10 { background-color: rgba(139,92,246,0.1) !important; }
+
+/* Border overrides */
+main .border-zinc-800 { border-color: #e2e8f0 !important; }
+main .border-zinc-850 { border-color: #e2e8f0 !important; }
+main .border-zinc-700 { border-color: #cbd5e1 !important; }
+
+/* Table rows */
+main table { color: #0f172a; }
+main th { color: #64748b !important; border-color: #e2e8f0 !important; }
+main td { border-color: #f1f5f9 !important; }
+main tr:hover td { background: rgba(99, 102, 241, 0.03) !important; }
+
+/* Toast notification */
+.toast-light {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: rgba(99, 102, 241, 0.15) !important;
+  color: #0f172a !important;
+}
+
+/* ─── Hover Glow Accents (lighter) ───────────────────────────── */
 .glow-blue:hover {
-  border-color: rgba(99, 120, 255, 0.4);
-  box-shadow: 0 0 25px rgba(63, 88, 228, 0.15), 0 8px 30px rgba(0, 0, 0, 0.6);
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 .glow-emerald:hover {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.12), 0 8px 30px rgba(0, 0, 0, 0.6);
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 .glow-violet:hover {
-  border-color: rgba(139, 92, 246, 0.4);
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.12), 0 8px 30px rgba(0, 0, 0, 0.6);
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 .glow-rose:hover {
-  border-color: rgba(244, 63, 94, 0.4);
-  box-shadow: 0 0 25px rgba(244, 63, 94, 0.12), 0 8px 30px rgba(0, 0, 0, 0.6);
+  border-color: rgba(244, 63, 94, 0.4) !important;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 .glow-amber:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.12), 0 8px 30px rgba(0, 0, 0, 0.6);
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* ─── Indigo Glow Highlight (always-on, no hover required) ──── */
-.indigo-glow {
-  box-shadow: 0 0 20px rgba(63, 88, 228, 0.15), 0 4px 20px rgba(0, 0, 0, 0.5);
-  border-color: rgba(99, 120, 255, 0.2) !important;
+/* ─── Logo Glow ──────────────────────────────────────────────── */
+.logo-glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.2);
 }
 
-/* ─── Animations ──────────────────────────────────────────────── */
+/* ─── Animations ─────────────────────────────────────────────── */
 .animate-fade-in {
-  animation: fadeIn 0.45s ease-out forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
@@ -177,14 +195,8 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes floatCard {
-  0%, 100% { transform: translateY(0px); }
-  33% { transform: translateY(-3px); }
-  66% { transform: translateY(-1px); }
 }
 
 /* ─── Status Pulse ───────────────────────────────────────────── */
@@ -199,17 +211,27 @@
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-/* ─── Indigo Border Glow (Logo & Branding) ───────────────────── */
-.logo-glow {
-  box-shadow: 0 0 20px rgba(63, 88, 228, 0.4), 0 0 40px rgba(63, 88, 228, 0.15);
+/* ─── Indigo Active Border ───────────────────────────────────── */
+.indigo-glow {
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.2), 0 2px 12px rgba(0,0,0,0.06);
+  border-color: rgba(99, 102, 241, 0.3) !important;
 }
 
-/* ─── Data Table Rows ─────────────────────────────────────────── */
-tr:hover td {
-  background: rgba(63, 88, 228, 0.04);
+/* ─── Code / Mono elements ───────────────────────────────────── */
+main code, main .font-mono {
+  background: #f1f5f9;
+  color: #4f46e5;
 }
 
-/* ─── Input Focus ─────────────────────────────────────────────── */
-input:focus, textarea:focus, select:focus {
-  box-shadow: 0 0 0 2px rgba(63, 88, 228, 0.2);
+/* ─── Focus states ───────────────────────────────────────────── */
+main input:focus,
+main textarea:focus,
+main select:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+  outline: none;
 }
+
+/* ─── Button overrides for dark bg buttons inside main ───────── */
+main .bg-blue-600 { background-color: #4f46e5 !important; }
+main .hover\:bg-blue-500:hover { background-color: #4338ca !important; }
