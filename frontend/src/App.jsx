@@ -32,7 +32,9 @@ import {
   MessageSquare,
   Briefcase,
   Smile,
-  Flame
+  Flame,
+  Sliders,
+  DollarSign
 } from 'lucide-react';
 import { 
   BarChart, 
