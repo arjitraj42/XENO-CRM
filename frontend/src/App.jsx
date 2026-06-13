@@ -27,9 +27,9 @@ import {
   Smartphone,
   Info,
   User,
-  Sliders,
-  DollarSign,
-  Percent
+  Percent,
+  Mail,
+  MessageSquare
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -1916,18 +1916,73 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
               </select>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 col-span-2">
               <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Dispatch Channel</label>
-              <select
-                value={selectedChannel}
-                onChange={(e) => setSelectedChannel(e.target.value)}
-                className="w-full bg-[#121214] border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-zinc-300 font-semibold"
-              >
-                <option value="whatsapp">WhatsApp</option>
-                <option value="sms">SMS</option>
-                <option value="email">Email</option>
-                <option value="rcs">RCS</option>
-              </select>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-1.5">
+                {[
+                  {
+                    id: 'whatsapp',
+                    label: 'WhatsApp',
+                    desc: 'High Open Rate',
+                    icon: MessageSquare,
+                    color: 'text-emerald-400',
+                    borderActive: 'border-emerald-500 bg-emerald-500/5 shadow-[0_0_15px_rgba(16,185,129,0.1)]',
+                    glow: 'glow-emerald'
+                  },
+                  {
+                    id: 'sms',
+                    label: 'SMS',
+                    desc: 'Direct mobile reach',
+                    icon: Smartphone,
+                    color: 'text-blue-400',
+                    borderActive: 'border-blue-500 bg-blue-500/5 shadow-[0_0_15px_rgba(59,130,246,0.1)]',
+                    glow: 'glow-blue'
+                  },
+                  {
+                    id: 'email',
+                    label: 'Email',
+                    desc: 'Detailed updates',
+                    icon: Mail,
+                    color: 'text-amber-400',
+                    borderActive: 'border-amber-500 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)]',
+                    glow: 'glow-amber'
+                  },
+                  {
+                    id: 'rcs',
+                    label: 'RCS',
+                    desc: 'Rich interactive msg',
+                    icon: Send,
+                    color: 'text-violet-400',
+                    borderActive: 'border-violet-500 bg-violet-500/5 shadow-[0_0_15px_rgba(139,92,246,0.1)]',
+                    glow: 'glow-violet'
+                  }
+                ].map((ch) => {
+                  const Icon = ch.icon;
+                  const isActive = selectedChannel === ch.id;
+                  return (
+                    <button
+                      key={ch.id}
+                      type="button"
+                      onClick={() => setSelectedChannel(ch.id)}
+                      className={`flex flex-col items-start p-3.5 rounded-xl border text-left transition-all duration-300 ${
+                        isActive 
+                          ? `${ch.borderActive} border-opacity-100` 
+                          : 'border-zinc-800 bg-[#121214] hover:bg-[#161619] hover:border-zinc-700'
+                      } ${ch.glow}`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <Icon className={`w-4 h-4 ${isActive ? ch.color : 'text-zinc-500'}`} />
+                        <span className={`text-xs font-bold ${isActive ? 'text-white' : 'text-zinc-400'}`}>
+                          {ch.label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-zinc-500 leading-tight">
+                        {ch.desc}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
