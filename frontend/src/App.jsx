@@ -1700,12 +1700,40 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
 
   // Handle prefilled triggers from customer drawer
   useEffect(() => {
-    if (prefilledCampaignData) {
-      setMessageTemplate(prefilledCampaignData.prefilledMessage || '');
-      setCampName(`Dedicated push to ${prefilledCampaignData.prefilledRecipient || 'User'}`);
-      setSelectedChannel('whatsapp');
-      clearPrefilledCampaignData();
-    }
+    const handlePrefill = async () => {
+      if (prefilledCampaignData) {
+        setMessageTemplate(prefilledCampaignData.prefilledMessage || '');
+        setCampName(`Dedicated push to ${prefilledCampaignData.prefilledRecipient || 'User'}`);
+        setSelectedChannel('whatsapp');
+        
+        // Dynamically create a single-recipient segment for the dedicated push
+        try {
+          const segmentName = `Dedicated: ${prefilledCampaignData.prefilledRecipient || 'User'}`;
+          const segRes = await fetch(`${BACKEND_URL}/api/segments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: segmentName,
+              filter_json: { name: prefilledCampaignData.prefilledRecipient }
+            })
+          });
+          if (segRes.ok) {
+            const newSeg = await segRes.json();
+            // Refresh parent segments list
+            await refresh();
+            // Automatically select the newly created segment
+            setSelectedSegment(newSeg.id);
+            showToast(`Dedicated segment created for ${prefilledCampaignData.prefilledRecipient}`);
+          }
+        } catch (err) {
+          console.error("Failed to auto-create dedicated segment:", err);
+        } finally {
+          clearPrefilledCampaignData();
+        }
+      }
+    };
+
+    handlePrefill();
   }, [prefilledCampaignData]);
 
   const generateAICopy = async () => {

@@ -172,6 +172,20 @@ async function queryCustomersByFilter(filterJson) {
 
   if (!filterJson) return await Customer.find({});
 
+  // 0. Individual Customer Identifier Filters (for dedicated single-recipient campaigns)
+  if (filterJson.customer_id) {
+    query.id = filterJson.customer_id;
+  }
+  if (filterJson.name) {
+    query.name = filterJson.name;
+  }
+  if (filterJson.email) {
+    query.email = filterJson.email;
+  }
+  if (filterJson.phone) {
+    query.phone = filterJson.phone;
+  }
+
   // 1. LTV Filters
   if (filterJson.ltv_gt !== undefined) {
     query.lifetime_value = { ...query.lifetime_value, $gt: filterJson.ltv_gt };
