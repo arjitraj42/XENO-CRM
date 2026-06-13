@@ -6,57 +6,42 @@ const apiRoutes = require('./routes/api');
 const { Campaign } = require('./models/models');
 const { queueManager } = require('./utils/queue');
 
-// Load environment variables
 dotenv.config();
-
-// Connect to Database
 connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: '*', // Allow all origins for dev
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'], allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Mount API Routes
 app.use('/api', apiRoutes);
 
-// Health check
+// Simple health check so we know the server's alive
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', uptime: process.uptime() });
+  res.json({ status: 'OK', uptime: process.uptime() });
 });
 
-// Start scheduler check loop (runs every 10 seconds to check for pending campaigns)
-const startCampaignScheduler = () => {
+// Runs every 10s and fires off any campaigns that were scheduled to go out
+function startScheduler() {
   console.log('[Scheduler] Scheduled campaigns worker started.');
   setInterval(async () => {
     try {
-      const now = new Date();
-      // Find campaigns that are SCHEDULED and whose schedule_time is in the past
-      const pendingCampaigns = await Campaign.find({
+      const due = await Campaign.find({
         status: 'SCHEDULED',
-        schedule_time: { $lte: now }
+        schedule_time: { $lte: new Date() }
       });
-
-      for (const campaign of pendingCampaigns) {
-        console.log(`[Scheduler] Firing scheduled campaign: ${campaign.name} (${campaign.id})`);
-        // We use queueManager to dispatch
-        queueManager.dispatchCampaign(campaign.id);
+      for (const c of due) {
+        console.log(`[Scheduler] Firing: ${c.name} (${c.id})`);
+        queueManager.dispatchCampaign(c.id);
       }
-    } catch (error) {
-      console.error('[Scheduler] Error checking scheduled campaigns:', error);
+    } catch (err) {
+      console.error('[Scheduler] Error:', err);
     }
-  }, 10000); // 10s intervals
-};
+  }, 10000);
+}
 
-startCampaignScheduler();
+startScheduler();
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Mini CRM Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Mini CRM Server running on port ${PORT}`));

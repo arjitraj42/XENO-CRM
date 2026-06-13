@@ -1,244 +1,172 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Users, 
-  ShoppingBag, 
-  Layers, 
-  Send, 
-  BarChart3, 
-  Database, 
-  Sparkles, 
-  Search, 
-  Filter, 
-  Plus, 
-  Calendar, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Clock, 
-  HelpCircle,
-  TrendingUp,
-  FileSpreadsheet,
-  RefreshCw,
-  Terminal,
-  X,
-  ChevronRight,
-  ArrowUpRight,
-  ShieldAlert,
-  Activity,
-  Smartphone,
-  Info,
-  User,
-  Percent,
-  Mail,
-  MessageSquare,
-  Briefcase,
-  Smile,
-  Flame,
-  Sliders,
-  DollarSign
+import {
+  Users, ShoppingBag, Layers, Send, BarChart3, Database, Sparkles,
+  Search, Filter, Plus, Calendar, AlertTriangle, CheckCircle2, Clock,
+  HelpCircle, TrendingUp, FileSpreadsheet, RefreshCw, Terminal, X,
+  ChevronRight, ArrowUpRight, ShieldAlert, Activity, Smartphone, Info,
+  User, Percent, Mail, MessageSquare, Briefcase, Smile, Flame,
+  Sliders, DollarSign
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  PieChart, 
-  Pie, 
-  Cell,
-  LineChart,
-  Line
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 
 const BACKEND_URL = 'http://localhost:5000';
-const COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f59e0b', '#06b6d4'];
+const CHART_COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f59e0b', '#06b6d4'];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [sseStatus, setSseStatus] = useState('connecting'); // connecting, connected, disconnected
+  const [sseStatus, setSseStatus] = useState('connecting');
   const [notification, setNotification] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Shared CRM States
+  // CRM data
   const [customers, setCustomers] = useState([]);
   const [customersTotal, setCustomersTotal] = useState(0);
   const [customersFilter, setCustomersFilter] = useState({ city: '', gender: '', search: '', page: 1 });
   const [segments, setSegments] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
-
-  // New Analytics States
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
-  // Customer Intelligence States
+  // Customer detail drawer
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [selectedCustomerDetail, setSelectedCustomerDetail] = useState(null);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
 
-  // Helper flags to trigger segment / campaign setup from recommendations
+  // Pre-fill state for jumping between tabs (e.g. from recommendations)
   const [prefilledFilter, setPrefilledFilter] = useState(null);
   const [prefilledCampaignData, setPrefilledCampaignData] = useState(null);
 
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Stable references to fetch functions to avoid resetting interval on state changes
+  // Keep stable refs so the auto-refresh interval doesn't go stale
   const fetchCustomersRef = useRef(null);
-  const fetchSegmentsRef = useRef(null);
+  const fetchSegmentsRef  = useRef(null);
   const fetchCampaignsRef = useRef(null);
   const fetchAnalyticsRef = useRef(null);
 
   useEffect(() => {
     fetchCustomersRef.current = fetchCustomers;
-    fetchSegmentsRef.current = fetchSegments;
+    fetchSegmentsRef.current  = fetchSegments;
     fetchCampaignsRef.current = fetchCampaigns;
     fetchAnalyticsRef.current = fetchAnalytics;
   });
 
   const refreshAllData = async () => {
     setIsRefreshing(true);
-    showToast("Refreshing CRM data...");
+    showToast('Refreshing data...');
     try {
-      await Promise.all([
-        fetchCustomers(),
-        fetchSegments(),
-        fetchCampaigns(),
-        fetchAnalytics()
-      ]);
-      showToast("CRM data refreshed successfully!");
+      await Promise.all([fetchCustomers(), fetchSegments(), fetchCampaigns(), fetchAnalytics()]);
+      showToast('All good! Data is up to date.');
     } catch (err) {
-      console.error("Manual refresh failed:", err);
-      showToast("Sync failed", "error");
+      console.error('Refresh failed:', err);
+      showToast('Sync failed — check your connection', 'error');
     } finally {
       setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    let intervalId = null;
-    if (autoRefresh) {
-      showToast("Auto-refresh enabled (every 15s)");
-      intervalId = setInterval(() => {
-        fetchCustomersRef.current();
-        fetchSegmentsRef.current();
-        fetchCampaignsRef.current();
-        fetchAnalyticsRef.current();
-      }, 15000);
-    }
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
+    if (!autoRefresh) return;
+    showToast('Auto-refresh on — updating every 15s');
+    const id = setInterval(() => {
+      fetchCustomersRef.current?.();
+      fetchSegmentsRef.current?.();
+      fetchCampaignsRef.current?.();
+      fetchAnalyticsRef.current?.();
+    }, 15000);
+    return () => clearInterval(id);
   }, [autoRefresh]);
 
-  // SSE connection holder
+  // Live updates via SSE — keeps campaign status and data in sync without polling
   useEffect(() => {
-    let eventSource = new EventSource(`${BACKEND_URL}/api/events`);
+    const es = new EventSource(`${BACKEND_URL}/api/events`);
 
-    eventSource.onopen = () => {
-      setSseStatus('connected');
-      console.log('[SSE] Stream connected successfully.');
-    };
+    es.onopen = () => setSseStatus('connected');
+    es.onerror = () => setSseStatus('disconnected');
 
-    eventSource.onerror = (err) => {
-      setSseStatus('disconnected');
-      console.error('[SSE] Connection error. Retrying...', err);
-    };
-
-    eventSource.onmessage = (event) => {
+    es.onmessage = (event) => {
       try {
         const payload = JSON.parse(event.data);
-        console.log('[SSE] Broadcast event received:', payload);
-
         if (payload.type === 'COMMUNICATION_STATUS_UPDATE') {
-          // Commented out to prevent toast flooding when sending campaigns to many customers
-          // showToast(`Message Status: ${payload.data.status}`);
           fetchCampaigns();
           if (activeTab === 'dashboard') fetchAnalytics();
         } else if (payload.type === 'CAMPAIGN_STATE_CHANGE') {
-          showToast(`Campaign status shifted: ${payload.data.status}`);
+          showToast(`Campaign ${payload.data.status.toLowerCase()}`);
           fetchCampaigns();
           if (activeTab === 'dashboard') fetchAnalytics();
         } else if (payload.type === 'CUSTOMERS_INGESTED') {
-          showToast(`Bulk customers ingested: +${payload.data.inserted}`);
+          showToast(`+${payload.data.inserted} customers added`);
           fetchCustomers();
           if (activeTab === 'dashboard') fetchAnalytics();
         } else if (payload.type === 'ORDERS_INGESTED') {
-          showToast(`Bulk orders ingested: +${payload.data.inserted}`);
+          showToast(`+${payload.data.inserted} orders added`);
           fetchCustomers();
           if (activeTab === 'dashboard') fetchAnalytics();
         }
       } catch (err) {
-        console.error('[SSE] Failed to parse event payload:', err);
+        console.error('SSE parse error:', err);
       }
     };
 
-    return () => {
-      eventSource.close();
-    };
+    return () => es.close();
   }, [activeTab]);
 
-  // API Fetch actions
   const fetchCustomers = async () => {
     try {
       const { search, city, gender, page } = customersFilter;
       let url = `${BACKEND_URL}/api/customers?limit=15&page=${page}`;
       if (city) url += `&city=${city}`;
       if (gender) url += `&gender=${gender}`;
-      
       const res = await fetch(url);
       const data = await res.json();
-      
       if (search) {
-        const filteredList = data.list.filter(c => 
-          c.name.toLowerCase().includes(search.toLowerCase()) ||
-          c.email.toLowerCase().includes(search.toLowerCase()) ||
+        const q = search.toLowerCase();
+        const filtered = data.list.filter(c =>
+          c.name.toLowerCase().includes(q) ||
+          c.email.toLowerCase().includes(q) ||
           c.phone.includes(search)
         );
-        setCustomers(filteredList);
-        setCustomersTotal(filteredList.length);
+        setCustomers(filtered);
+        setCustomersTotal(filtered.length);
       } else {
         setCustomers(data.list);
         setCustomersTotal(data.total);
       }
     } catch (err) {
-      console.error('Error fetching customers:', err);
+      console.error('fetchCustomers:', err);
     }
   };
 
   const fetchSegments = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/segments`);
-      const data = await res.json();
+      const data = await fetch(`${BACKEND_URL}/api/segments`).then(r => r.json());
       setSegments(data);
     } catch (err) {
-      console.error('Error fetching segments:', err);
+      console.error('fetchSegments:', err);
     }
   };
 
   const fetchCampaigns = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/campaigns`);
-      const data = await res.json();
+      const data = await fetch(`${BACKEND_URL}/api/campaigns`).then(r => r.json());
       setCampaigns(data);
     } catch (err) {
-      console.error('Error fetching campaigns:', err);
+      console.error('fetchCampaigns:', err);
     }
   };
 
   const fetchAnalytics = async () => {
     setLoadingAnalytics(true);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/analytics/dashboard`);
-      const data = await res.json();
+      const data = await fetch(`${BACKEND_URL}/api/analytics/dashboard`).then(r => r.json());
       setAnalyticsData(data);
     } catch (err) {
-      console.error('Error fetching analytics:', err);
+      console.error('fetchAnalytics:', err);
     } finally {
       setLoadingAnalytics(false);
     }
@@ -247,35 +175,31 @@ export default function App() {
   const fetchCustomerDetails = async (id) => {
     setLoadingCustomerDetail(true);
     try {
-      // Get customer profile
-      const resCust = await fetch(`${BACKEND_URL}/api/customers/${id}`);
-      const dataCust = await resCust.json();
-      setSelectedCustomerDetail(dataCust);
-
-      // Get customer orders
-      const resOrders = await fetch(`${BACKEND_URL}/api/customers/${id}/orders`);
-      const dataOrders = await resOrders.json();
-      setCustomerOrders(dataOrders);
+      const [cust, orders] = await Promise.all([
+        fetch(`${BACKEND_URL}/api/customers/${id}`).then(r => r.json()),
+        fetch(`${BACKEND_URL}/api/customers/${id}/orders`).then(r => r.json()),
+      ]);
+      setSelectedCustomerDetail(cust);
+      setCustomerOrders(orders);
     } catch (err) {
-      console.error('Error loading customer detail drawer:', err);
-      showToast('Error loading customer information', 'error');
+      console.error('fetchCustomerDetails:', err);
+      showToast('Could not load customer info', 'error');
     } finally {
       setLoadingCustomerDetail(false);
     }
   };
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [customersFilter]);
+  // Reload customers when filters change
+  useEffect(() => { fetchCustomers(); }, [customersFilter]);
 
+  // Reload data when switching tabs
   useEffect(() => {
     fetchSegments();
     fetchCampaigns();
-    if (activeTab === 'dashboard') {
-      fetchAnalytics();
-    }
+    if (activeTab === 'dashboard') fetchAnalytics();
   }, [activeTab]);
 
+  // Load customer detail when one is selected
   useEffect(() => {
     if (selectedCustomerId) {
       fetchCustomerDetails(selectedCustomerId);
@@ -290,7 +214,6 @@ export default function App() {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  // Trigger segment creation from recommendation
   const handleTriggerSegment = (filter) => {
     setPrefilledFilter(filter);
     setActiveTab('segments');
@@ -810,7 +733,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       nameKey="_id"
                     >
                       {channelBreakoutData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip 
@@ -826,7 +749,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
             <div className="mt-4 grid grid-cols-3 gap-2 text-[10px] text-zinc-400 font-bold">
               {channelBreakoutData.map((item, idx) => (
                 <div key={item._id} className="flex items-center gap-1.5 truncate">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }} />
                   <span className="truncate">{item._id}: ₹{item.value.toLocaleString('en-IN')}</span>
                 </div>
               ))}
