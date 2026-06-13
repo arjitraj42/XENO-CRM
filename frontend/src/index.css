@@ -4,7 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Light Base ─────────────────────────────────────────────── */
 @layer base {
   body {
     background-color: #f1f5f9;
@@ -15,20 +14,17 @@
   }
 }
 
-/* ─── Custom Scrollbar ───────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 9999px; }
 ::-webkit-scrollbar-thumb:hover { background: #a5b4fc; }
 
-/* ─── Sidebar — Deep Indigo (Contrast) ───────────────────────── */
 .sidebar-navy {
   background: linear-gradient(180deg, #1e1b4b 0%, #1e1b4b 60%, #18174a 100%);
   border-right: 1px solid rgba(99, 102, 241, 0.25);
   box-shadow: 4px 0 32px rgba(99, 102, 241, 0.12);
 }
 
-/* ─── Glass Panel (Header) — White ──────────────────────────── */
 .glass-panel {
   background: rgba(255, 255, 255, 0.97) !important;
   backdrop-filter: blur(16px);
@@ -38,7 +34,6 @@
   color: #0f172a !important;
 }
 
-/* ─── Glass Cards — White with Indigo Accent ─────────────────── */
 .glass-card {
   background: rgba(255, 255, 255, 0.98) !important;
   backdrop-filter: blur(4px);
@@ -55,13 +50,11 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(99, 102, 241, 0.07) !important;
 }
 
-/* ─── Content Area Global Light Overrides ────────────────────── */
 main {
   background: #f1f5f9;
   color: #0f172a;
 }
 
-/* Override ALL dark arbitrary-value backgrounds inside main */
 main [class*="bg-\[#09090b\]"],
 main [class*="bg-\[#121214\]"],
 main [class*="bg-\[#0c0c0d\]"],
@@ -69,7 +62,6 @@ main [class*="bg-\[#161619\]"] {
   background-color: #ffffff !important;
 }
 
-/* Override zinc backgrounds in content */
 main .bg-zinc-900,
 main [class*="bg-zinc-9"] {
   background-color: #f8fafc !important;
@@ -83,7 +75,6 @@ main [class*="bg-zinc-95"] {
   background-color: #ffffff !important;
 }
 
-/* Form inputs always white */
 main input,
 main select,
 main textarea {
@@ -102,7 +93,6 @@ main select option {
   color: #0f172a;
 }
 
-/* Override light-grey/invisible text on light bg */
 main .text-zinc-500 { color: #64748b !important; }
 main .text-zinc-400 { color: #64748b !important; }
 main .text-zinc-300 { color: #475569 !important; }
@@ -114,7 +104,6 @@ main .text-zinc-250 { color: #334155 !important; }
 main .text-zinc-450 { color: #64748b !important; }
 main .text-zinc-550 { color: #475569 !important; }
 
-/* Keep accent colors */
 main .text-blue-400   { color: #3b82f6 !important; }
 main .text-blue-500   { color: #2563eb !important; }
 main .text-indigo-400 { color: #6366f1 !important; }
@@ -124,32 +113,27 @@ main .text-amber-400  { color: #f59e0b !important; }
 main .text-rose-400   { color: #f43f5e !important; }
 main .text-teal-400   { color: #14b8a6 !important; }
 
-/* Keep colored background badges/chips */
 main .bg-blue-500\/10 { background-color: rgba(59,130,246,0.1) !important; }
 main .bg-emerald-500\/10 { background-color: rgba(16,185,129,0.1) !important; }
 main .bg-amber-500\/10 { background-color: rgba(245,158,11,0.1) !important; }
 main .bg-rose-500\/10 { background-color: rgba(244,63,94,0.1) !important; }
 main .bg-violet-500\/10 { background-color: rgba(139,92,246,0.1) !important; }
 
-/* Border overrides */
 main .border-zinc-800 { border-color: #e2e8f0 !important; }
 main .border-zinc-850 { border-color: #e2e8f0 !important; }
 main .border-zinc-700 { border-color: #cbd5e1 !important; }
 
-/* Table rows */
 main table { color: #0f172a; }
 main th { color: #64748b !important; border-color: #e2e8f0 !important; }
 main td { border-color: #f1f5f9 !important; }
 main tr:hover td { background: rgba(99, 102, 241, 0.03) !important; }
 
-/* Toast notification */
 .toast-light {
   background: rgba(255, 255, 255, 0.98) !important;
   border-color: rgba(99, 102, 241, 0.15) !important;
   color: #0f172a !important;
 }
 
-/* ─── Hover Glow Accents (lighter) ───────────────────────────── */
 .glow-blue:hover {
   border-color: rgba(99, 102, 241, 0.4) !important;
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
@@ -175,12 +159,10 @@ main tr:hover td { background: rgba(99, 102, 241, 0.03) !important; }
   box-shadow: 0 0 20px rgba(245, 158, 11, 0.12), 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* ─── Logo Glow ──────────────────────────────────────────────── */
 .logo-glow {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.2);
 }
 
-/* ─── Animations ─────────────────────────────────────────────── */
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
 }
@@ -199,7 +181,6 @@ main tr:hover td { background: rgba(99, 102, 241, 0.03) !important; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Status Pulse ───────────────────────────────────────────── */
 .pulse-green {
   box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
   animation: pulseGreen 2s infinite;
@@ -211,19 +192,16 @@ main tr:hover td { background: rgba(99, 102, 241, 0.03) !important; }
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-/* ─── Indigo Active Border ───────────────────────────────────── */
 .indigo-glow {
   box-shadow: 0 0 16px rgba(99, 102, 241, 0.2), 0 2px 12px rgba(0,0,0,0.06);
   border-color: rgba(99, 102, 241, 0.3) !important;
 }
 
-/* ─── Code / Mono elements ───────────────────────────────────── */
 main code, main .font-mono {
   background: #f1f5f9;
   color: #4f46e5;
 }
 
-/* ─── Focus states ───────────────────────────────────────────── */
 main input:focus,
 main textarea:focus,
 main select:focus {
@@ -232,6 +210,5 @@ main select:focus {
   outline: none;
 }
 
-/* ─── Button overrides for dark bg buttons inside main ───────── */
 main .bg-blue-600 { background-color: #4f46e5 !important; }
 main .hover\:bg-blue-500:hover { background-color: #4338ca !important; }

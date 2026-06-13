@@ -21,7 +21,7 @@ export default function App() {
   const [notification, setNotification] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // CRM data
+  
   const [customers, setCustomers] = useState([]);
   const [customersTotal, setCustomersTotal] = useState(0);
   const [customersFilter, setCustomersFilter] = useState({ city: '', gender: '', search: '', page: 1 });
@@ -30,20 +30,20 @@ export default function App() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
-  // Customer detail drawer
+  
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [selectedCustomerDetail, setSelectedCustomerDetail] = useState(null);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
 
-  // Pre-fill state for jumping between tabs (e.g. from recommendations)
+  
   const [prefilledFilter, setPrefilledFilter] = useState(null);
   const [prefilledCampaignData, setPrefilledCampaignData] = useState(null);
 
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Keep stable refs so the auto-refresh interval doesn't go stale
+  
   const fetchCustomersRef = useRef(null);
   const fetchSegmentsRef  = useRef(null);
   const fetchCampaignsRef = useRef(null);
@@ -82,7 +82,7 @@ export default function App() {
     return () => clearInterval(id);
   }, [autoRefresh]);
 
-  // Live updates via SSE — keeps campaign status and data in sync without polling
+  
   useEffect(() => {
     const es = new EventSource(`${BACKEND_URL}/api/events`);
 
@@ -189,17 +189,17 @@ export default function App() {
     }
   };
 
-  // Reload customers when filters change
+  
   useEffect(() => { fetchCustomers(); }, [customersFilter]);
 
-  // Reload data when switching tabs
+  
   useEffect(() => {
     fetchSegments();
     fetchCampaigns();
     if (activeTab === 'dashboard') fetchAnalytics();
   }, [activeTab]);
 
-  // Load customer detail when one is selected
+  
   useEffect(() => {
     if (selectedCustomerId) {
       fetchCustomerDetails(selectedCustomerId);
@@ -222,7 +222,7 @@ export default function App() {
   return (
     <div className="flex h-screen overflow-hidden font-sans" style={{background: '#f1f5f9', color: '#0f172a'}}>
       
-      {/* Toast Notification */}
+      
       {notification && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border bg-white/97 backdrop-blur-md shadow-2xl animate-slide-up" style={{borderColor: 'rgba(99,102,241,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(99,102,241,0.08)'}}>
           <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
@@ -233,10 +233,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Sidebar Navigation */}
+      
       <aside className={`${sidebarCollapsed ? 'w-20' : 'w-64'} sidebar-navy flex flex-col justify-between transition-all duration-300 z-30 shrink-0`}>
         <div>
-          {/* Logo Section */}
+          
           <div className="p-5 flex items-center justify-between" style={{borderBottom: '1px solid rgba(99,120,255,0.12)'}}>
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center shrink-0 logo-glow">
@@ -253,7 +253,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* User Profile Workspace Indicator */}
+          
           {!sidebarCollapsed && (
             <div className="p-4 mx-3 my-4 rounded-xl flex items-center gap-3 animate-fade-in" style={{background: 'rgba(63,88,228,0.06)', border: '1px solid rgba(99,120,255,0.14)'}}>
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style={{background: 'rgba(63,88,228,0.2)', border: '1px solid rgba(99,120,255,0.3)', color: '#a5b4fc'}}>
@@ -266,7 +266,7 @@ export default function App() {
             </div>
           )}
 
-          {/* Navigation Links */}
+          
           <nav className="p-3 space-y-1">
             {[
               { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -283,7 +283,7 @@ export default function App() {
                   key={tab.id}
                   onClick={() => {
                     setActiveTab(tab.id);
-                    // Close drawers
+                    
                     setSelectedCustomerId(null);
                   }}
                   className={`w-full flex items-center rounded-xl p-3 transition-all duration-200 group relative ${
@@ -309,7 +309,7 @@ export default function App() {
                     style={{color: isActive ? (tab.isAi ? '#a78bfa' : '#818cf8') : (tab.isAi ? '#818cf8' : '#64748b')}} />
                   {!sidebarCollapsed && <span className="ml-3 text-sm animate-fade-in">{tab.label}</span>}
                   
-                  {/* Tooltip for collapsed view */}
+                  
                   {sidebarCollapsed && (
                     <div className="absolute left-full ml-4 px-2 py-1 rounded bg-zinc-950 text-xs text-white border border-zinc-800 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 z-40 shadow-xl font-medium whitespace-nowrap">
                       {tab.label}
@@ -321,7 +321,7 @@ export default function App() {
           </nav>
         </div>
 
-        {/* Real-time SSE Agent status */}
+        
         <div className="p-4" style={{borderTop: '1px solid rgba(99,120,255,0.1)', background: 'rgba(4,6,18,0.6)'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 overflow-hidden">
@@ -341,10 +341,10 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Main Workspace Container */}
+      
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto" style={{background: '#f1f5f9'}}>
         
-        {/* Header */}
+        
         <header className="h-16 border-b border-zinc-850 px-8 flex items-center justify-between shrink-0 glass-panel sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <button 
@@ -359,7 +359,7 @@ export default function App() {
             </h2>
           </div>
           <div className="flex items-center gap-4">
-            {/* Auto Refresh Web Host option */}
+            
             <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
               <div className="relative">
                 <input 
@@ -374,7 +374,7 @@ export default function App() {
               <span className="md:block hidden">Auto Refresh Web Host</span>
             </label>
 
-            {/* Refresh Web Host option */}
+            
             <button
               onClick={refreshAllData}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-xs font-bold transition shadow"
@@ -384,14 +384,14 @@ export default function App() {
               <span>Refresh Web Host</span>
             </button>
 
-            {/* Server API tag */}
+            
             <div className="text-xs bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-xl text-zinc-300 font-mono md:block hidden">
               Server API: <span className="text-blue-400 font-semibold">{BACKEND_URL}</span>
             </div>
           </div>
         </header>
 
-        {/* View Router */}
+        
         <div className="p-8 flex-1">
           {activeTab === 'dashboard' && (
             <DashboardView 
@@ -459,7 +459,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* Customer Intelligence Sliding Drawer */}
+      
       {selectedCustomerId && (
         <CustomerIntelligenceDrawer 
           customerId={selectedCustomerId}
@@ -479,15 +479,13 @@ export default function App() {
   );
 }
 
-// ----------------------------------------------------
-// 1. DASHBOARD VIEW
-// ----------------------------------------------------
+
 function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, onTriggerSegment, onSelectCustomer, onNavigate }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [stats, setStats] = useState(null);
   const [aiSummary, setAiSummary] = useState('');
   const [loadingFunnel, setLoadingFunnel] = useState(false);
-  const [activeChartTab, setActiveChartTab] = useState('revenue'); // revenue, growth
+  const [activeChartTab, setActiveChartTab] = useState('revenue'); 
 
   const viewCampaignStats = async (campaign) => {
     setLoadingFunnel(true);
@@ -505,7 +503,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
     }
   };
 
-  // Funnel chart compiled dynamically
+  
   const funnelData = stats ? [
     { name: 'Sent', value: stats.sentCount, fill: '#3b82f6' },
     { name: 'Delivered', value: Math.round(stats.sentCount * (stats.deliveryRate / 100)), fill: '#06b6d4' },
@@ -523,7 +521,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
     );
   }
 
-  // Dashboard Fallback calculations if backend has delay or empty
+  
   const revenueTrendData = analyticsData?.revenueTrend || [];
   const audienceGrowthData = analyticsData?.audienceGrowth || [];
   const channelBreakoutData = analyticsData?.channelBreakout || [];
@@ -534,13 +532,13 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
   const segmentSuggestions = analyticsData?.segmentSuggestions || [];
   const bestCampaign = analyticsData?.bestCampaign || null;
 
-  // Render KPIs
+  
   const totalAttributedRevenue = revenueTrendData.reduce((sum, item) => sum + item.revenue, 0);
 
   return (
     <div className="space-y-8 animate-fade-in">
       
-      {/* 1. TOP KPI METRICS */}
+      
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6 rounded-2xl glow-blue">
           <div className="flex items-center justify-between mb-4">
@@ -587,7 +585,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
         </div>
       </div>
 
-      {/* 2. DYNAMIC AI RECOMMENDATION CENTER */}
+      
       {recommendations.length > 0 && (
         <div className="glass-card p-6 rounded-2xl border-l-4 border-l-blue-600 bg-gradient-to-r from-blue-950/20 to-transparent">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -627,7 +625,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
         </div>
       )}
 
-      {/* 3. CHARTS PANEL (REVENUE TREND & AUDIENCE GROWTH) */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 glass-card p-6 rounded-2xl flex flex-col justify-between">
           <div>
@@ -708,7 +706,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
           </p>
         </div>
 
-        {/* CHANNEL BREAKOUT PIE */}
+        
         <div className="glass-card p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -745,7 +743,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
               )}
             </div>
 
-            {/* Legend */}
+            
             <div className="mt-4 grid grid-cols-3 gap-2 text-[10px] text-zinc-400 font-bold">
               {channelBreakoutData.map((item, idx) => (
                 <div key={item._id} className="flex items-center gap-1.5 truncate">
@@ -758,10 +756,10 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
         </div>
       </div>
 
-      {/* 4. CHURN PREDICTION, HEALTH SCORES, BEST CAMPAIGN */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* CHURN PREDICTION WIDGET */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-rose-500" />
@@ -787,14 +785,14 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
           </div>
         </div>
 
-        {/* CUSTOMER HEALTH SCORES */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Activity className="w-5 h-5 text-emerald-500" />
             Customer Health Scores
           </h3>
           
-          {/* Health Stats Progress Bar */}
+          
           <div className="space-y-1">
             <div className="flex justify-between text-[10px] font-bold text-zinc-400">
               <span className="text-emerald-400">Excellent ({healthStats.excellent})</span>
@@ -808,7 +806,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
             </div>
           </div>
 
-          {/* Top customer health entries */}
+          
           <div className="space-y-3 pt-2">
             {topCustomers.map(cust => (
               <div key={cust.id} className="flex items-center justify-between text-xs border-b border-zinc-850 pb-2.5">
@@ -828,7 +826,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
           </div>
         </div>
 
-        {/* BEST PERFORMING CAMPAIGN WIDGET */}
+        
         <div className="glass-card p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -864,7 +862,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
         </div>
       </div>
 
-      {/* 5. SMART SEGMENT SUGGESTIONS */}
+      
       <div className="glass-card p-6 rounded-2xl">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
           <Layers className="w-5 h-5 text-violet-500" />
@@ -888,9 +886,9 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
         </div>
       </div>
 
-      {/* 6. CAMPAIGN TABLE & FUNNEL ANALYTICS */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Campaign List */}
+        
         <div className="lg:col-span-2 glass-card p-6 rounded-2xl">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
             <Send className="w-5 h-5 text-blue-500" />
@@ -945,7 +943,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
           </div>
         </div>
 
-        {/* Funnel Panel */}
+        
         <div className="glass-card p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -975,7 +973,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                   </ResponsiveContainer>
                 </div>
                 
-                {/* Stats list */}
+                
                 <div className="grid grid-cols-2 gap-4 text-xs font-bold font-mono">
                   <div className="bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-850">
                     <span className="text-[9px] text-zinc-500 uppercase">Open Rate</span>
@@ -1013,13 +1011,11 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
   );
 }
 
-// ----------------------------------------------------
-// 2. CUSTOMERS VIEW
-// ----------------------------------------------------
+
 function CustomersView({ customers, total, filter, setFilter, refresh, onSelectCustomer }) {
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Search and Filters */}
+      
       <div className="glass-card p-6 rounded-2xl flex flex-wrap gap-4 items-center justify-between">
         <div className="relative flex-1 min-w-[280px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
@@ -1059,7 +1055,7 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
         </div>
       </div>
 
-      {/* Customer List */}
+      
       <div className="glass-card p-6 rounded-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -1075,7 +1071,7 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
             </thead>
             <tbody className="divide-y divide-zinc-850/60 text-xs font-semibold">
               {customers.map((cust) => {
-                // Approximate score for layout
+                
                 const healthScore = Math.max(0, Math.min(100, Math.round((cust.lifetime_value / 250) + 70)));
                 return (
                   <tr key={cust.id} className="hover:bg-zinc-900/30 transition">
@@ -1125,7 +1121,7 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
           </table>
         </div>
 
-        {/* Pagination footer */}
+        
         <div className="flex items-center justify-between border-t border-zinc-850 mt-6 pt-4 text-xs font-bold text-zinc-550">
           <span>Displaying {customers.length} of {total} contacts</span>
           <div className="flex gap-2 font-mono">
@@ -1150,9 +1146,7 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
   );
 }
 
-// ----------------------------------------------------
-// 3. CUSTOMER INTELLIGENCE SLIDING DRAWER
-// ----------------------------------------------------
+
 function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loading, onClose, onTriggerCampaign, showToast }) {
   if (loading || !customerDetail) {
     return (
@@ -1179,7 +1173,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
 
   return (
     <div className="fixed inset-y-0 right-0 w-[480px] border-l border-zinc-850 bg-[#121214]/95 backdrop-blur-md z-45 flex flex-col justify-between shadow-2xl animate-slide-up">
-      {/* Drawer Header */}
+      
       <div className="p-6 border-b border-zinc-850 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-700 flex items-center justify-center text-zinc-200 border border-zinc-700">
@@ -1195,10 +1189,10 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
         </button>
       </div>
 
-      {/* Drawer Body */}
+      
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         
-        {/* Profile Stats Cards */}
+        
         <div className="grid grid-cols-2 gap-4 text-xs font-semibold">
           <div className="p-3 bg-zinc-900/60 border border-zinc-850 rounded-xl">
             <span className="text-[9px] text-zinc-550 uppercase">Email</span>
@@ -1218,7 +1212,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
           </div>
         </div>
 
-        {/* Intelligence Gauges */}
+        
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-zinc-900/60 border border-zinc-850 rounded-xl space-y-2">
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Health Score</span>
@@ -1251,7 +1245,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
           </div>
         </div>
 
-        {/* Transaction Summary KPIs */}
+        
         <div className="grid grid-cols-3 gap-4 border-t border-zinc-850 pt-5 text-xs font-bold font-mono">
           <div className="bg-zinc-950 p-2.5 rounded-lg border border-zinc-850 text-center">
             <span className="text-[9px] text-zinc-550 uppercase block">Total Value</span>
@@ -1267,7 +1261,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
           </div>
         </div>
 
-        {/* Purchase History Chronology */}
+        
         <div className="space-y-3">
           <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
             <ShoppingBag className="w-4 h-4 text-zinc-500" />
@@ -1293,7 +1287,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
         </div>
       </div>
 
-      {/* Drawer Action Commands */}
+      
       <div className="p-6 border-t border-zinc-850 bg-[#0c0c0d] flex gap-3">
         <button 
           onClick={() => onTriggerCampaign({
@@ -1309,9 +1303,7 @@ function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loadin
   );
 }
 
-// ----------------------------------------------------
-// 4. SEGMENTS VIEW
-// ----------------------------------------------------
+
 function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPrefilledFilter }) {
   const [segName, setSegName] = useState('');
   const [aiPrompt, setAiPrompt] = useState('');
@@ -1321,19 +1313,19 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
   const [compiling, setCompiling] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Manual editor state
+  
   const [manualCity, setManualCity] = useState('');
   const [manualGender, setManualGender] = useState('');
   const [manualMinLtv, setManualMinLtv] = useState('');
   const [manualDaysAgo, setManualDaysAgo] = useState('');
 
-  // Handle prefilled filter triggers from dashboard
+  
   useEffect(() => {
     if (prefilledFilter) {
       setFilterJson(prefilledFilter);
       updatePreview(prefilledFilter);
       setAiPrompt("Parsed target segment filters compiled by Xeno recommendation recommendations.");
-      // Map fields to manual preview just in case
+      
       if (prefilledFilter.city) setManualCity(Array.isArray(prefilledFilter.city) ? prefilledFilter.city[0] : prefilledFilter.city);
       if (prefilledFilter.gender) setManualGender(prefilledFilter.gender);
       if (prefilledFilter.ltv_gt) setManualMinLtv(prefilledFilter.ltv_gt);
@@ -1342,7 +1334,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
     }
   }, [prefilledFilter]);
 
-  // Sync manual inputs with query preview JSON
+  
   useEffect(() => {
     const f = {};
     if (manualCity) f.city = manualCity;
@@ -1428,7 +1420,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
       
-      {/* Segment Builder */}
+      
       <div className="lg:col-span-2 space-y-6">
         <div className="glass-card p-6 rounded-2xl space-y-6 glow-blue">
           <div className="flex items-center gap-2 border-b border-zinc-800 pb-4">
@@ -1436,7 +1428,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">AI Segment Search</h3>
           </div>
 
-          {/* AI prompt box */}
+          
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Natural Language Filter Queries</label>
             <textarea 
@@ -1447,7 +1439,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
               className="w-full bg-[#121214] border border-zinc-800 focus:border-blue-500 rounded-xl px-4 py-3 text-xs focus:outline-none text-white transition placeholder-zinc-650"
             />
             
-            {/* Prompt Quick Chips */}
+            
             <div className="flex flex-wrap gap-2 pt-1">
               {[
                 "VIPs who are inactive for 30 days",
@@ -1480,7 +1472,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
             <div className="flex-1 h-[1px] bg-zinc-850" />
           </div>
 
-          {/* Manual inputs row */}
+          
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest">City</label>
@@ -1532,7 +1524,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
             </div>
           </div>
 
-          {/* Compiled JSON View */}
+          
           {Object.keys(filterJson).length > 0 && (
             <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-850 space-y-2">
               <span className="text-[9px] uppercase font-bold tracking-wider text-blue-400 font-mono">Parsed Query Conditions</span>
@@ -1540,7 +1532,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
             </div>
           )}
 
-          {/* Save segment footer */}
+          
           {previewCount !== null && (
             <div className="border-t border-zinc-800 pt-4 flex gap-4 items-end">
               <div className="flex-1 space-y-1.5">
@@ -1565,10 +1557,10 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
         </div>
       </div>
 
-      {/* Previews and List */}
+      
       <div className="space-y-6">
         
-        {/* Live count preview */}
+        
         {previewCount !== null && (
           <div className="glass-card p-6 rounded-2xl space-y-4 animate-slide-up border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-950/10 to-transparent">
             <h4 className="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest">Live Audience Size</h4>
@@ -1593,7 +1585,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
           </div>
         )}
 
-        {/* Saved segments list */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Layers className="w-5 h-5 text-blue-500" />
@@ -1623,9 +1615,7 @@ function SegmentsView({ segments, refresh, showToast, prefilledFilter, clearPref
   );
 }
 
-// ----------------------------------------------------
-// 5. CAMPAIGNS VIEW
-// ----------------------------------------------------
+
 function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampaignData, clearPrefilledCampaignData }) {
   const [campName, setCampName] = useState('');
   const [selectedSegment, setSelectedSegment] = useState('');
@@ -1635,12 +1625,12 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
   const [isScheduled, setIsScheduled] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // AI copywriting states
+  
   const [brandTone, setBrandTone] = useState('Exciting');
   const [copyNotes, setCopyNotes] = useState('');
   const [draftingCopy, setDraftingCopy] = useState(false);
 
-  // Handle prefilled triggers from customer drawer
+  
   useEffect(() => {
     const handlePrefill = async () => {
       if (prefilledCampaignData) {
@@ -1648,7 +1638,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
         setCampName(`Dedicated push to ${prefilledCampaignData.prefilledRecipient || 'User'}`);
         setSelectedChannel('whatsapp');
         
-        // Dynamically create a single-recipient segment for the dedicated push
+        
         try {
           const segmentName = `Dedicated: ${prefilledCampaignData.prefilledRecipient || 'User'}`;
           const segRes = await fetch(`${BACKEND_URL}/api/segments`, {
@@ -1661,9 +1651,9 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
           });
           if (segRes.ok) {
             const newSeg = await segRes.json();
-            // Refresh parent segments list
+            
             await refresh();
-            // Automatically select the newly created segment
+            
             setSelectedSegment(newSeg.id);
             showToast(`Dedicated segment created for ${prefilledCampaignData.prefilledRecipient}`);
           }
@@ -1763,9 +1753,9 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
     }
   };
 
-  // Smartphone Mockup preview renderer
+  
   const renderMockupPreview = () => {
-    // Dynamic message parse
+    
     let parsedMessage = messageTemplate || "Configure template copy details in builder...";
     parsedMessage = parsedMessage.replace(/\{\{name\}\}/g, "Rahul Sharma");
     parsedMessage = parsedMessage.replace(/\{\{ltv\}\}/g, "₹14,500");
@@ -1777,16 +1767,16 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
           Interactive UI Mockup
         </h3>
 
-        {/* Device Wrapper */}
+        
         <div className="w-[280px] h-[480px] rounded-[36px] border-[8px] border-zinc-800 bg-[#09090b] shadow-2xl relative flex flex-col justify-between overflow-hidden">
           
-          {/* Top Speaker Bar */}
+          
           <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-zinc-800 rounded-full z-10 flex items-center justify-center">
             <span className="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2" />
             <span className="w-8 h-1 bg-zinc-900 rounded-full" />
           </div>
 
-          {/* Device Header */}
+          
           <div className="pt-8 px-4 pb-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between text-white shrink-0">
             <div className="text-[10px] font-bold">Xeno Sandbox</div>
             <div className="flex gap-1.5">
@@ -1795,10 +1785,10 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
             </div>
           </div>
 
-          {/* Device Chat Screen */}
+          
           <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-[#0d0d0f] flex flex-col justify-end">
             
-            {/* Template Card Bubble */}
+            
             <div className="max-w-[85%] bg-zinc-900 border border-zinc-850 p-3 rounded-2xl rounded-bl-none text-[11px] leading-relaxed text-zinc-150 shadow-md">
               <p className="whitespace-pre-line break-words">{parsedMessage}</p>
               <span className="text-[8px] text-zinc-500 font-mono text-right block mt-2">12:30 PM · Delivered</span>
@@ -1806,7 +1796,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
             
           </div>
 
-          {/* Keyboard input box */}
+          
           <div className="p-3 bg-zinc-900 border-t border-zinc-850 flex gap-2 items-center shrink-0">
             <div className="flex-1 bg-zinc-950 border border-zinc-850 px-3 py-1.5 rounded-xl text-[10px] text-zinc-500">
               Interactive preview mode
@@ -1824,7 +1814,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
       
-      {/* Campaign Builder */}
+      
       <div className="lg:col-span-2 space-y-6">
         <div className="glass-card p-6 rounded-2xl space-y-6">
           <div className="flex items-center gap-2 border-b border-zinc-800 pb-4">
@@ -1928,7 +1918,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
             </div>
           </div>
 
-          {/* AI copywriting copilot */}
+          
           <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-850 space-y-4 glow-violet">
             <div className="flex items-center gap-1.5 text-violet-400">
               <Sparkles className="w-4 h-4" />
@@ -2027,7 +2017,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
             </button>
           </div>
 
-          {/* Template editor */}
+          
           <div className="space-y-2">
             <div className="flex justify-between items-center text-[10px] font-bold text-zinc-400">
               <label className="uppercase tracking-widest">Message Template Copy</label>
@@ -2042,7 +2032,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
             />
           </div>
 
-          {/* Schedule settings */}
+          
           <div className="flex items-center justify-between border-t border-zinc-850 pt-4">
             <div className="flex items-center gap-3">
               <input 
@@ -2075,13 +2065,13 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
         </div>
       </div>
 
-      {/* Side preview Mockup and list */}
+      
       <div className="space-y-6">
         
-        {/* Device Preview */}
+        
         {renderMockupPreview()}
 
-        {/* Dispatch Registry */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Send className="w-5 h-5 text-blue-500" />
@@ -2135,9 +2125,7 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
   );
 }
 
-// ----------------------------------------------------
-// 6. DATA MANAGER VIEW
-// ----------------------------------------------------
+
 function DataManagerView({ showToast, refreshCustomers, customersTotal, segmentsTotal, campaignsTotal }) {
   const [jsonCustomers, setJsonCustomers] = useState('');
   const [jsonOrders, setJsonOrders] = useState('');
@@ -2202,10 +2190,10 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
       
-      {/* DB Summary & Diagnostics */}
+      
       <div className="lg:col-span-1 space-y-6">
         
-        {/* Database Diagnostic counts */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Sliders className="w-5 h-5 text-indigo-500" />
@@ -2227,7 +2215,7 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
           </div>
         </div>
 
-        {/* Seeding Controls */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Terminal className="w-5 h-5 text-blue-500" />
@@ -2245,7 +2233,7 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
           </button>
         </div>
 
-        {/* Integration routes */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-3">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Info className="w-4 h-4 text-blue-500" />
@@ -2259,10 +2247,10 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
         </div>
       </div>
 
-      {/* Manual JSON boxes */}
+      
       <div className="lg:col-span-2 space-y-6">
         
-        {/* Bulk Customer JSON */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <FileSpreadsheet className="w-4 h-4 text-blue-500" />
@@ -2284,7 +2272,7 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
           </button>
         </div>
 
-        {/* Bulk Order JSON */}
+        
         <div className="glass-card p-6 rounded-2xl space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <FileSpreadsheet className="w-4 h-4 text-blue-500" />
@@ -2310,9 +2298,7 @@ function DataManagerView({ showToast, refreshCustomers, customersTotal, segments
   );
 }
 
-// ----------------------------------------------------
-// 7. XENO AI ASSISTANT VIEW
-// ----------------------------------------------------
+
 function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTriggerSegment, onTriggerCampaign, onSelectCustomer }) {
   const [messages, setMessages] = useState([
     {
@@ -2337,7 +2323,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
   const handleSendQuery = async (text) => {
     if (!text.trim()) return;
     
-    // Add user message
+    
     const userMsg = {
       id: `u_${Date.now()}`,
       sender: 'user',
@@ -2350,7 +2336,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
     setTyping(true);
     
     try {
-      // Fetch customers to do client-side search matching (limit 1000 captures all 500 seeded customers)
+      
       const custRes = await fetch(`${BACKEND_URL}/api/customers?limit=1000`);
       let allCustomers = [];
       if (custRes.ok) {
@@ -2375,7 +2361,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
       let replyText = "";
       let actions = [];
       
-      // If customer matches are found, display them dynamically
+      
       if (matchedCustomers.length > 0) {
         if (matchedCustomers.length === 1) {
           const customer = matchedCustomers[0];
@@ -2417,7 +2403,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
           ];
         }
       } else {
-        // Fallback to static NLP keyword checks or general LLM response
+        
         const normalizedQuery = queryLower;
         
         if (normalizedQuery.includes('churn') || normalizedQuery.includes('dormant') || normalizedQuery.includes('inactive')) {
@@ -2449,7 +2435,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             { type: 'campaign', label: 'Concierge Gift Campaign', payload: { prefilledRecipient: 'Top VIPs', prefilledMessage: 'Dear {{name}}, as a valued VIP member, a complimentary gift has been dispatched to your address. Thank you for shopping with us!' } }
           ];
         } else {
-          // Ask the general AI chatbot endpoint!
+          
           try {
             const chatRes = await fetch(`${BACKEND_URL}/api/ai/chat`, {
               method: 'POST',
@@ -2519,7 +2505,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
   return (
     <div className="space-y-8 animate-fade-in text-zinc-100">
       
-      {/* HERO SECTION */}
+      
       <div className="relative p-6 rounded-2xl bg-gradient-to-r from-indigo-950/20 to-blue-950/20 border border-zinc-850 flex flex-col items-center text-center space-y-4 shadow-xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -2537,7 +2523,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
           </p>
         </div>
 
-        {/* AI search box */}
+        
         <div className="w-full max-w-2xl relative">
           <input 
             type="text" 
@@ -2556,7 +2542,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
           </button>
         </div>
 
-        {/* Example prompts */}
+        
         <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] font-bold">
           <span className="text-zinc-550 mr-1 uppercase tracking-wider font-mono">Example Queries:</span>
           {[
@@ -2577,7 +2563,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
         </div>
       </div>
 
-      {/* QUICK ACTIONS ROW */}
+      
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         {[
           { label: "Find Churn Risk Customers", prompt: "Show customers likely to churn.", icon: ShieldAlert, color: "text-rose-400" },
@@ -2601,13 +2587,13 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
         })}
       </div>
 
-      {/* THREE COLUMN GRID */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
         
-        {/* COLUMN 1: CONVERSATIONAL CHAT (40% width / 4 cols) */}
+        
         <div className="lg:col-span-4 glass-card p-5 rounded-2xl flex flex-col justify-between h-[650px] glow-violet">
           
-          {/* Chat Header */}
+          
           <div className="border-b border-zinc-850 pb-3 mb-3 flex items-center justify-between shrink-0">
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-455 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-indigo-400" />
@@ -2616,19 +2602,19 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             <span className="text-[9px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold font-mono">XENO AI</span>
           </div>
 
-          {/* Messages Scrolling Body */}
+          
           <div className="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
             {messages.map(msg => (
               <div 
                 key={msg.id} 
                 className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}
               >
-                {/* Sender Tag */}
+                
                 <span className="text-[8px] text-zinc-550 font-bold font-mono uppercase mb-1">
                   {msg.sender === 'user' ? 'YOU' : 'XENO AI'}
                 </span>
                 
-                {/* Bubble Content */}
+                
                 <div className={`p-3.5 rounded-2xl max-w-[90%] leading-relaxed ${
                   msg.sender === 'user' 
                     ? 'bg-zinc-800 text-zinc-100 rounded-tr-none' 
@@ -2636,7 +2622,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
                 }`}>
                   <p className="whitespace-pre-line break-words">{msg.text}</p>
                   
-                  {/* Action Buttons Output */}
+                  
                   {msg.actions && msg.actions.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-zinc-850">
                       {msg.actions.map((act, idx) => (
@@ -2655,7 +2641,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
               </div>
             ))}
             
-            {/* Typing Indicator */}
+            
             {typing && (
               <div className="flex flex-col items-start animate-pulse">
                 <span className="text-[8px] text-zinc-550 font-bold font-mono uppercase mb-1">XENO AI</span>
@@ -2668,7 +2654,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Input Bar */}
+          
           <div className="border-t border-zinc-850 pt-3 mt-3 shrink-0 flex gap-2">
             <input
               type="text"
@@ -2688,10 +2674,10 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
 
         </div>
 
-        {/* COLUMN 2: INSIGHTS & REPORTS (30% width / 3 cols) */}
+        
         <div className="lg:col-span-3 space-y-6">
           
-          {/* AI INSIGHTS CENTER */}
+          
           <div className="glass-card p-5 rounded-2xl space-y-4 border-l-4 border-l-indigo-500">
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-450 flex items-center gap-1.5">
               <ShieldAlert className="w-4.5 h-4.5 text-indigo-400" />
@@ -2700,7 +2686,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             
             <div className="space-y-4 text-xs font-medium">
               
-              {/* Insight 1 */}
+              
               <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-850 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] font-bold text-zinc-200">⚠️ Re-engage Dormant Customers</span>
@@ -2718,7 +2704,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
                 </div>
               </div>
 
-              {/* Insight 2 */}
+              
               <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-850 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] font-bold text-zinc-250">🔥 Channel Optimization</span>
@@ -2736,7 +2722,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
                 </div>
               </div>
 
-              {/* Insight 3 */}
+              
               <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-850 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] font-bold text-zinc-200">📈 Revenue Opportunity</span>
@@ -2757,7 +2743,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             </div>
           </div>
 
-          {/* AI GENERATED REPORTS: WEEKLY BUSINESS SUMMARY */}
+          
           <div className="glass-card p-5 rounded-2xl space-y-4">
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-450 flex items-center gap-1.5">
               <FileSpreadsheet className="w-4 h-4 text-blue-400" />
@@ -2798,10 +2784,10 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
 
         </div>
 
-        {/* COLUMN 3: CUSTOMER INTELLIGENCE & SCORECARDS (30% width / 3 cols) */}
+        
         <div className="lg:col-span-3 space-y-6">
           
-          {/* AI SCORECARD */}
+          
           <div className="glass-card p-5 rounded-2xl space-y-4 bg-gradient-to-br from-indigo-950/10 to-transparent animate-fade-in border border-zinc-850">
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-450 flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-emerald-400" />
@@ -2843,7 +2829,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             </div>
           </div>
 
-          {/* CUSTOMER INTELLIGENCE: TOP CUSTOMERS */}
+          
           <div className="glass-card p-5 rounded-2xl space-y-4">
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-450 flex items-center gap-1.5">
               <Users className="w-4 h-4 text-blue-500" />
@@ -2867,7 +2853,7 @@ function AiAssistantView({ analyticsData, campaigns, segments, showToast, onTrig
             </div>
           </div>
 
-          {/* SMART SUGGESTIONS prompts list */}
+          
           <div className="glass-card p-5 rounded-2xl space-y-3">
             <h4 className="text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Suggested Prompts</h4>
             <div className="space-y-2 text-xs font-semibold text-zinc-400">

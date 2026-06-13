@@ -4,10 +4,10 @@ const { Customer, Order, Segment, Campaign, Communication } = require('../models
 const { queueManager, queryCustomersByFilter } = require('../utils/queue');
 const { translateTextToFilter, draftCampaignMessage, generateCampaignSummary, generateGeneralChatResponse } = require('../utils/ai');
 
-// List of connected SSE clients for live updates
+
 let sseClients = [];
 
-// Server Sent Events (SSE) Route for live notifications
+
 router.get('/events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -23,7 +23,7 @@ router.get('/events', (req, res) => {
   });
 });
 
-// Helper to broadcast live updates to all clients
+
 function broadcastUpdate(type, data) {
   console.log(`[SSE] Broadcasting: ${type}`);
   sseClients.forEach(client => {
@@ -31,11 +31,9 @@ function broadcastUpdate(type, data) {
   });
 }
 
-// ----------------------------------------------------
-// 1. DATA INGESTION
-// ----------------------------------------------------
 
-// POST /api/customers/bulk - Bulk ingest customers (accepts JSON array)
+
+
 router.post('/customers/bulk', async (req, res) => {
   try {
     const customers = req.body;
@@ -48,19 +46,19 @@ router.post('/customers/bulk', async (req, res) => {
     let skipped = 0;
 
     for (const data of customers) {
-      // Validation
+      
       if (!data.id || !data.name || !data.email || !data.phone) {
         skipped++;
         continue;
       }
 
-      // De-duplication on email/phone (check if exists)
+      
       const existing = await Customer.findOne({
         $or: [{ id: data.id }, { email: data.email }, { phone: data.phone }]
       });
 
       if (existing) {
-        // Update existing customer record (merging fields)
+        
         existing.name = data.name;
         existing.email = data.email;
         existing.phone = data.phone;
@@ -97,7 +95,7 @@ router.post('/customers/bulk', async (req, res) => {
   }
 });
 
-// POST /api/orders/bulk - Bulk ingest orders
+
 router.post('/orders/bulk', async (req, res) => {
   try {
     const orders = req.body;
@@ -114,11 +112,11 @@ router.post('/orders/bulk', async (req, res) => {
         continue;
       }
 
-      // Check if order already exists
+      
       const existingOrder = await Order.findOne({ id: data.id });
       if (existingOrder) {
         skipped++;
-        continue; // Order already ingested
+        continue; 
       }
 
       const order = new Order({
@@ -133,15 +131,15 @@ router.post('/orders/bulk', async (req, res) => {
       await order.save();
       inserted++;
 
-      // Recalculate customer LTV and last_purchase_at
+      
       const customer = await Customer.findOne({ id: data.customer_id });
       if (customer) {
-        // Fetch all completed orders for this customer
+        
         const customerOrders = await Order.find({ customer_id: customer.id, status: 'COMPLETED' });
         
         const totalLtv = customerOrders.reduce((sum, o) => sum + o.amount, 0);
         
-        // Find most recent order date
+        
         let latestDate = null;
         customerOrders.forEach(o => {
           const oDate = new Date(o.created_at);
@@ -166,7 +164,7 @@ router.post('/orders/bulk', async (req, res) => {
   }
 });
 
-// GET /api/customers - List customers with optional filters
+
 router.get('/customers', async (req, res) => {
   try {
     const { city, gender, minAge, maxAge, minLtv, maxLtv, limit = 100, page = 1 } = req.query;
@@ -200,11 +198,9 @@ router.get('/customers', async (req, res) => {
   }
 });
 
-// ----------------------------------------------------
-// 2. SEGMENTS
-// ----------------------------------------------------
 
-// POST /api/segments - Create segment
+
+
 router.post('/segments', async (req, res) => {
   try {
     const { name, filter_json } = req.body;
@@ -229,7 +225,7 @@ router.post('/segments', async (req, res) => {
   }
 });
 
-// GET /api/segments - Get all segments
+
 router.get('/segments', async (req, res) => {
   try {
     const segments = await Segment.find({}).sort({ created_at: -1 });
@@ -239,7 +235,7 @@ router.get('/segments', async (req, res) => {
   }
 });
 
-// POST /api/segments/preview - Preview segment count + sample
+
 router.post('/segments/preview', async (req, res) => {
   try {
     const { filter_json } = req.body;
@@ -249,7 +245,7 @@ router.post('/segments/preview', async (req, res) => {
 
     const matchedCustomers = await queryCustomersByFilter(filter_json);
     const count = matchedCustomers.length;
-    const sample = matchedCustomers.slice(0, 5); // return 5 sample customers
+    const sample = matchedCustomers.slice(0, 5); 
 
     res.status(200).json({ count, sample });
   } catch (error) {
@@ -257,7 +253,7 @@ router.post('/segments/preview', async (req, res) => {
   }
 });
 
-// GET /api/segments/:id/preview - Saved segment preview
+
 router.get('/segments/:id/preview', async (req, res) => {
   try {
     const segment = await Segment.findOne({ id: req.params.id });
@@ -277,11 +273,9 @@ router.get('/segments/:id/preview', async (req, res) => {
   }
 });
 
-// ----------------------------------------------------
-// 3. CAMPAIGNS
-// ----------------------------------------------------
 
-// POST /api/campaigns - Create campaign
+
+
 router.post('/campaigns', async (req, res) => {
   try {
     const { name, segment_id, channel, message_template, schedule_time } = req.body;
@@ -309,7 +303,7 @@ router.post('/campaigns', async (req, res) => {
   }
 });
 
-// GET /api/campaigns - List campaigns
+
 router.get('/campaigns', async (req, res) => {
   try {
     const campaigns = await Campaign.find({}).sort({ created_at: -1 });
@@ -319,7 +313,7 @@ router.get('/campaigns', async (req, res) => {
   }
 });
 
-// POST /api/campaigns/:id/send - Trigger immediate campaign send
+
 router.post('/campaigns/:id/send', async (req, res) => {
   try {
     const campaign = await Campaign.findOne({ id: req.params.id });
@@ -331,7 +325,7 @@ router.post('/campaigns/:id/send', async (req, res) => {
       return res.status(400).json({ error: 'Campaign is already sending' });
     }
 
-    // Trigger dispatch asynchronously
+    
     queueManager.dispatchCampaign(campaign.id);
 
     res.status(200).json({ success: true, message: 'Campaign sending initiated' });
@@ -341,7 +335,7 @@ router.post('/campaigns/:id/send', async (req, res) => {
   }
 });
 
-// GET /api/campaigns/:id/stats - Performance analytics & AI summary
+
 router.get('/campaigns/:id/stats', async (req, res) => {
   try {
     const campaignId = req.params.id;
@@ -350,7 +344,7 @@ router.get('/campaigns/:id/stats', async (req, res) => {
       return res.status(404).json({ error: 'Campaign not found' });
     }
 
-    // Get all communication logs
+    
     const comms = await Communication.find({ campaign_id: campaignId });
     const sentCount = comms.length;
 
@@ -380,26 +374,26 @@ router.get('/campaigns/:id/stats', async (req, res) => {
     const readCount = countStatus('READ') + countStatus('CLICKED');
     const clickedCount = countStatus('CLICKED');
 
-    // Rates relative to Sent/Delivered per Section 7 definition
+    
     const deliveryRate = sentCount > 0 ? (deliveredCount / sentCount) * 100 : 0;
     const openRate = deliveredCount > 0 ? (openedCount / deliveredCount) * 100 : 0;
     const readRate = deliveredCount > 0 ? (readCount / deliveredCount) * 100 : 0;
     const clickRate = deliveredCount > 0 ? (clickedCount / deliveredCount) * 100 : 0;
     const failedRate = sentCount > 0 ? (failedCount / sentCount) * 100 : 0;
 
-    // ----------------------------------------------------
-    // REVENUE ATTRIBUTION LOOP (24-hour conversion window)
-    // ----------------------------------------------------
+    
+    
+    
     let attributedOrders = 0;
     let revenueLift = 0;
 
-    // Find all customers who were successfully dispatched (delivered / opened / read / clicked)
+    
     const activeComms = comms.filter(c => 
       ['DELIVERED', 'OPENED', 'READ', 'CLICKED'].includes(c.status)
     );
 
     for (const comm of activeComms) {
-      // Find orders placed by this customer within 24 hours of communication timestamp
+      
       const dispatchTime = new Date(comm.updated_at);
       const windowEnd = new Date(dispatchTime.getTime() + 24 * 60 * 60 * 1000);
 
@@ -427,7 +421,7 @@ router.get('/campaigns/:id/stats', async (req, res) => {
       revenueLift
     };
 
-    // Generate summary using Gemini AI or fallback
+    
     const aiSummary = await generateCampaignSummary(stats);
 
     res.status(200).json({
@@ -440,11 +434,9 @@ router.get('/campaigns/:id/stats', async (req, res) => {
   }
 });
 
-// ----------------------------------------------------
-// 4. WEBHOOK RECEIVER
-// ----------------------------------------------------
 
-// POST /api/receipts - Status Callback Receiver (Channel Service -> CRM)
+
+
 router.post('/receipts', async (req, res) => {
   try {
     const { comm_id, status, timestamp, error_message } = req.body;
@@ -457,9 +449,9 @@ router.post('/receipts', async (req, res) => {
       return res.status(404).json({ error: `Communication receipt ${comm_id} not found` });
     }
 
-    // Idempotency check:
-    // Lifecycle order: QUEUED -> SENT -> DELIVERED -> OPENED -> READ -> CLICKED
-    // If current status is further along than callback status, ignore it
+    
+    
+    
     const statusPriority = {
       'QUEUED': 0,
       'SENT': 1,
@@ -478,14 +470,14 @@ router.post('/receipts', async (req, res) => {
       return res.status(200).json({ success: true, message: 'Duplicate callback ignored' });
     }
 
-    // Update status
+    
     communication.status = status;
     if (error_message) communication.error_message = error_message;
     await communication.save();
 
     console.log(`[Webhook] Comm ${comm_id} status updated to: ${status}`);
     
-    // Broadcast live event update to frontend
+    
     broadcastUpdate('COMMUNICATION_STATUS_UPDATE', {
       comm_id,
       campaign_id: communication.campaign_id,
@@ -500,11 +492,9 @@ router.post('/receipts', async (req, res) => {
   }
 });
 
-// ----------------------------------------------------
-// 5. AI GENERATION ENDPOINTS
-// ----------------------------------------------------
 
-// POST /api/ai/segment - Translate text into JSON filter query
+
+
 router.post('/ai/segment', async (req, res) => {
   try {
     const { description } = req.body;
@@ -519,7 +509,7 @@ router.post('/ai/segment', async (req, res) => {
   }
 });
 
-// POST /api/ai/message - Draft message templates
+
 router.post('/ai/message', async (req, res) => {
   try {
     const { channel, segmentDescription, brandTone, notes } = req.body;
@@ -534,7 +524,7 @@ router.post('/ai/message', async (req, res) => {
   }
 });
 
-// POST /api/ai/chat - General conversational copilot chat
+
 router.post('/ai/chat', async (req, res) => {
   try {
     const { message, history } = req.body;
@@ -542,11 +532,11 @@ router.post('/ai/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Gather some lightweight CRM context to feed the prompt
+    
     const totalCustomers = await Customer.countDocuments({});
     const totalOrders = await Order.countDocuments({});
     
-    // Calculate total revenue and AOV
+    
     const revenueAgg = await Order.aggregate([
       { $match: { status: 'COMPLETED' } },
       { $group: { _id: null, total: { $sum: '$amount' } } }
@@ -569,12 +559,12 @@ router.post('/ai/chat', async (req, res) => {
   }
 });
 
-// GET /api/analytics/dashboard - Aggregated stats for the redesigned dashboard
+
 router.get('/analytics/dashboard', async (req, res) => {
   try {
     const now = new Date();
 
-    // 1. Revenue Trend (Completed orders grouped by date)
+    
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 120);
     const revenueTrendRaw = await Order.aggregate([
@@ -587,7 +577,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       { $sort: { _id: 1 } }
     ]);
 
-    // 2. Audience Growth (Group by Month of created_at)
+    
     const audienceRaw = await Customer.aggregate([
       { $group: {
         _id: { $dateToString: { format: "%Y-%m", date: "$created_at" } },
@@ -596,7 +586,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       { $sort: { _id: 1 } }
     ]);
 
-    // Calculate running cumulative count
+    
     let cumulative = 0;
     const audienceGrowth = audienceRaw.map(item => {
       cumulative += item.count;
@@ -607,7 +597,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       };
     });
 
-    // 3. Channel Breakout (Completed orders grouped by channel)
+    
     const channelBreakout = await Order.aggregate([
       { $match: { status: 'COMPLETED' } },
       { $group: {
@@ -616,7 +606,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       }}
     ]);
 
-    // 4. Best Performing Campaign
+    
     const campaigns = await Campaign.find({ status: 'COMPLETED' });
     let bestCampaign = null;
     let maxRevenueLift = -1;
@@ -664,7 +654,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       }
     }
 
-    // 5. Churn Prediction & Customer Health Score calculations
+    
     const allCustomers = await Customer.find({ last_purchase_at: { $ne: null } })
       .sort({ last_purchase_at: 1 })
       .limit(100);
@@ -703,7 +693,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       }
     }
 
-    // Top Customers list (by LTV)
+    
     const topCustomersRaw = await Customer.find({}).sort({ lifetime_value: -1 }).limit(5);
     const topCustomers = topCustomersRaw.map(cust => {
       const daysSince = cust.last_purchase_at ? Math.round((now - new Date(cust.last_purchase_at)) / (1000 * 60 * 60 * 24)) : 365;
@@ -720,7 +710,7 @@ router.get('/analytics/dashboard', async (req, res) => {
       };
     });
 
-    // 6. Dynamic AI Recommendations & Smart Segments suggestions
+    
     const recommendations = [];
     const segmentSuggestions = [];
 
@@ -795,7 +785,7 @@ router.get('/analytics/dashboard', async (req, res) => {
   }
 });
 
-// GET /api/customers/:id - Get single customer details
+
 router.get('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findOne({ id: req.params.id });
@@ -808,7 +798,7 @@ router.get('/customers/:id', async (req, res) => {
   }
 });
 
-// GET /api/customers/:id/orders - Get order history for a single customer
+
 router.get('/customers/:id/orders', async (req, res) => {
   try {
     const orders = await Order.find({ customer_id: req.params.id }).sort({ created_at: -1 });

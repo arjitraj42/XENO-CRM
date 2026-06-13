@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Helper to get Gemini API Model
+
 function getGeminiModel() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -15,9 +15,7 @@ function getGeminiModel() {
   }
 }
 
-/**
- * Translates a natural language prompt into a structured filter JSON
- */
+
 async function translateTextToFilter(promptText) {
   const model = getGeminiModel();
   
@@ -56,7 +54,7 @@ CRITICAL: Return ONLY valid, minified JSON. Do NOT include markdown code blocks,
     });
 
     const responseText = result.response.text().trim();
-    // Strip markdown formatting if any is returned
+    
     const cleanJsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     return JSON.parse(cleanJsonStr);
   } catch (error) {
@@ -65,9 +63,7 @@ CRITICAL: Return ONLY valid, minified JSON. Do NOT include markdown code blocks,
   }
 }
 
-/**
- * Drafts personalized campaign templates
- */
+
 async function draftCampaignMessage({ channel, segmentDescription, brandTone, notes }) {
   const model = getGeminiModel();
   
@@ -109,9 +105,7 @@ Return ONLY the final drafted text message copy (for Email, include Subject: [Su
   }
 }
 
-/**
- * Generates an analytical campaign summary in plain English
- */
+
 async function generateCampaignSummary(stats) {
   const model = getGeminiModel();
 
@@ -153,21 +147,19 @@ Return ONLY the summary text, with elegant formatting, to be rendered directly o
   }
 }
 
-// ==========================================
-// MOCK FALLBACKS (If API keys are missing)
-// ==========================================
+
 
 function mockCompileFilter(text) {
   const query = {};
   const lowercase = text.toLowerCase();
 
-  // Parse LTV
+  
   const ltvGtMatch = lowercase.match(/(?:spent|ltv|revenue|more than|above|>)\s*(\d+)/i);
   if (ltvGtMatch) {
     query.ltv_gt = parseInt(ltvGtMatch[1], 10);
   }
 
-  // Parse last purchase days ago (recency)
+  
   const daysAgoGtMatch = lowercase.match(/(?:not purchased|haven't bought|no order|ago\s*>\s*|last purchased more than|more than)\s*(\d+)\s*(?:days|day)/i);
   if (daysAgoGtMatch) {
     query.last_purchase_days_ago_gt = parseInt(daysAgoGtMatch[1], 10);

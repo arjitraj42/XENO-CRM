@@ -17,12 +17,10 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 app.use('/api', apiRoutes);
 
-// Simple health check so we know the server's alive
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', uptime: process.uptime() });
 });
 
-// Runs every 10s and fires off any campaigns that were scheduled to go out
 function startScheduler() {
   console.log('[Scheduler] Scheduled campaigns worker started.');
   setInterval(async () => {

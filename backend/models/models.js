@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Customer Schema
+
 const customerSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true },
@@ -15,18 +15,18 @@ const customerSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-// Order Schema
+
 const orderSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
   customer_id: { type: String, required: true, index: true },
   amount: { type: Number, required: true },
   status: { type: String, required: true, default: 'COMPLETED' },
-  channel: { type: String, required: true }, // e.g. Web, App, In-Store
+  channel: { type: String, required: true }, 
   product_category: { type: String, required: true },
   created_at: { type: Date, required: true, default: Date.now }
 });
 
-// Segment Schema
+
 const segmentSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true },
@@ -35,7 +35,7 @@ const segmentSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-// Campaign Schema
+
 const campaignSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true },
@@ -47,7 +47,7 @@ const campaignSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-// Communication Schema
+
 const communicationSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
   campaign_id: { type: String, required: true, index: true },
@@ -66,7 +66,7 @@ const communicationSchema = new mongoose.Schema({
   error_message: { type: String, default: null }
 });
 
-// Update communication timestamp on status change
+
 communicationSchema.pre('save', function(next) {
   this.updated_at = new Date();
   next();
