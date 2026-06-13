@@ -297,7 +297,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-[#09090b] text-[#e4e4e7] overflow-hidden font-sans">
+    <div className="flex h-screen text-[#e2e8f0] overflow-hidden font-sans" style={{background: 'linear-gradient(135deg, #05071a 0%, #070b22 40%, #060918 100%)'}}>
       
       {/* Toast Notification */}
       {notification && (
@@ -311,12 +311,12 @@ export default function App() {
       )}
 
       {/* Sidebar Navigation */}
-      <aside className={`${sidebarCollapsed ? 'w-20' : 'w-64'} border-r border-zinc-800 bg-[#121214] flex flex-col justify-between transition-all duration-300 z-30 shrink-0`}>
+      <aside className={`${sidebarCollapsed ? 'w-20' : 'w-64'} sidebar-navy flex flex-col justify-between transition-all duration-300 z-30 shrink-0`}>
         <div>
           {/* Logo Section */}
-          <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
+          <div className="p-5 flex items-center justify-between" style={{borderBottom: '1px solid rgba(99,120,255,0.12)'}}>
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center shrink-0 logo-glow">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               {!sidebarCollapsed && (
@@ -324,7 +324,7 @@ export default function App() {
                   <h1 className="font-extrabold text-sm tracking-tight text-white uppercase">
                     XENO CRM
                   </h1>
-                  <span className="text-[9px] uppercase tracking-wider text-blue-400 font-bold">AI Customer Engine</span>
+                  <span className="text-[9px] uppercase tracking-wider font-bold" style={{color: '#818cf8'}}>AI Customer Engine</span>
                 </div>
               )}
             </div>
@@ -332,8 +332,8 @@ export default function App() {
 
           {/* User Profile Workspace Indicator */}
           {!sidebarCollapsed && (
-            <div className="p-4 mx-3 my-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 flex items-center gap-3 animate-fade-in">
-              <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300 border border-zinc-700">
+            <div className="p-4 mx-3 my-4 rounded-xl flex items-center gap-3 animate-fade-in" style={{background: 'rgba(63,88,228,0.06)', border: '1px solid rgba(99,120,255,0.14)'}}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style={{background: 'rgba(63,88,228,0.2)', border: '1px solid rgba(99,120,255,0.3)', color: '#a5b4fc'}}>
                 HQ
               </div>
               <div className="flex-1 overflow-hidden">
@@ -366,18 +366,24 @@ export default function App() {
                   className={`w-full flex items-center rounded-xl p-3 transition-all duration-200 group relative ${
                     isActive 
                       ? tab.isAi
-                        ? 'bg-gradient-to-r from-indigo-950/40 to-blue-950/40 text-white font-medium border-l-2 border-indigo-500 shadow-lg shadow-indigo-500/5'
-                        : 'bg-zinc-800 text-white font-medium border-l-2 border-blue-500' 
+                        ? 'text-white font-semibold'
+                        : 'text-white font-semibold'
                       : tab.isAi
-                        ? 'text-indigo-400 hover:bg-indigo-950/10 hover:text-indigo-200'
-                        : 'text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-100'
+                        ? 'hover:text-indigo-200'
+                        : 'hover:text-slate-100'
                   }`}
+                  style={isActive ? {
+                    background: tab.isAi
+                      ? 'linear-gradient(90deg, rgba(99,78,246,0.22) 0%, rgba(63,88,228,0.08) 100%)'
+                      : 'linear-gradient(90deg, rgba(63,88,228,0.2) 0%, rgba(63,88,228,0.06) 100%)',
+                    borderLeft: '2px solid #6378ff',
+                    boxShadow: 'inset 0 0 20px rgba(63,88,228,0.08)'
+                  } : {
+                    color: tab.isAi ? '#818cf8' : '#94a3b8'
+                  }}
                 >
-                  <Icon className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-105 ${
-                    isActive 
-                      ? tab.isAi ? 'text-indigo-400' : 'text-blue-500' 
-                      : tab.isAi ? 'text-indigo-400/80 group-hover:text-indigo-400' : 'text-zinc-400 group-hover:text-zinc-200'
-                  } ${tab.isAi ? 'animate-pulse' : ''}`} />
+                  <Icon className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-105 ${tab.isAi ? 'animate-pulse' : ''}`}
+                    style={{color: isActive ? (tab.isAi ? '#a78bfa' : '#818cf8') : (tab.isAi ? '#818cf8' : '#64748b')}} />
                   {!sidebarCollapsed && <span className="ml-3 text-sm animate-fade-in">{tab.label}</span>}
                   
                   {/* Tooltip for collapsed view */}
@@ -393,7 +399,7 @@ export default function App() {
         </div>
 
         {/* Real-time SSE Agent status */}
-        <div className="p-4 border-t border-zinc-800 bg-[#0c0c0d]">
+        <div className="p-4" style={{borderTop: '1px solid rgba(99,120,255,0.1)', background: 'rgba(4,6,18,0.6)'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 overflow-hidden">
               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
@@ -406,14 +412,14 @@ export default function App() {
               )}
             </div>
             {!sidebarCollapsed && (
-              <span className="text-[9px] text-blue-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono font-bold animate-fade-in">LIVE</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold animate-fade-in" style={{color: '#818cf8', background: 'rgba(63,88,228,0.12)', border: '1px solid rgba(99,120,255,0.25)'}}>LIVE</span>
             )}
           </div>
         </div>
       </aside>
 
       {/* Main Workspace Container */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-[#09090b]">
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto" style={{background: 'transparent'}}>
         
         {/* Header */}
         <header className="h-16 border-b border-zinc-850 px-8 flex items-center justify-between shrink-0 glass-panel sticky top-0 z-20">
