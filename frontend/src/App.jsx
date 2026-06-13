@@ -1183,7 +1183,7 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
                     <td className="py-4 text-right">
                       <button 
                         onClick={() => onSelectCustomer(cust.id)}
-                        className="px-3 py-1 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800 text-zinc-300 rounded-lg text-[10px] font-extrabold uppercase transition"
+                        className="px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg text-[10px] font-extrabold uppercase transition shadow-sm shadow-emerald-500/20"
                       >
                         Analyze
                       </button>
@@ -1233,9 +1233,17 @@ function CustomersView({ customers, total, filter, setFilter, refresh, onSelectC
 function CustomerIntelligenceDrawer({ customerId, customerDetail, orders, loading, onClose, onTriggerCampaign, showToast }) {
   if (loading || !customerDetail) {
     return (
-      <div className="fixed inset-y-0 right-0 w-96 border-l border-zinc-800 bg-[#121214] p-8 z-40 flex flex-col items-center justify-center gap-3 shadow-2xl">
-        <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-        <p className="text-xs text-zinc-500 font-medium">Fetching profile details & purchase histories...</p>
+      <div className="fixed inset-y-0 right-0 w-96 border-l border-zinc-800 bg-[#121214] z-40 flex flex-col shadow-2xl">
+        <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
+          <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Loading Profile...</span>
+          <button onClick={onClose} className="p-1.5 rounded-lg border border-zinc-700 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 p-8">
+          <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
+          <p className="text-xs text-zinc-500 font-medium text-center">Fetching profile details &amp; purchase histories...</p>
+        </div>
       </div>
     );
   }
