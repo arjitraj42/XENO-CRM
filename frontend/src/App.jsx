@@ -29,7 +29,10 @@ import {
   User,
   Percent,
   Mail,
-  MessageSquare
+  MessageSquare,
+  Briefcase,
+  Smile,
+  Flame
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -1993,28 +1996,84 @@ function CampaignsView({ campaigns, segments, refresh, showToast, prefilledCampa
               <span className="text-[10px] font-extrabold uppercase tracking-widest">AI Copywriting Helper</span>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
+            <div className="space-y-4">
+              <div className="space-y-1.5">
                 <label className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest">Brand Tone</label>
-                <select
-                  value={brandTone}
-                  onChange={(e) => setBrandTone(e.target.value)}
-                  className="w-full bg-[#121214] border border-zinc-850 rounded-xl px-3 py-2 text-xs text-zinc-300 focus:outline-none"
-                >
-                  <option value="Exciting">Exciting / Premium</option>
-                  <option value="Casual">Casual / Friendly</option>
-                  <option value="Professional">Professional</option>
-                  <option value="Urgency">Urgency / FOMO</option>
-                </select>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {[
+                    {
+                      id: 'Exciting',
+                      label: 'Exciting',
+                      sub: 'Premium / Bold',
+                      icon: Sparkles,
+                      color: 'text-violet-400',
+                      borderActive: 'border-violet-500 bg-violet-500/5 shadow-[0_0_12px_rgba(139,92,246,0.1)]',
+                      glow: 'glow-violet'
+                    },
+                    {
+                      id: 'Casual',
+                      label: 'Casual',
+                      sub: 'Friendly / Warm',
+                      icon: Smile,
+                      color: 'text-emerald-400',
+                      borderActive: 'border-emerald-500 bg-emerald-500/5 shadow-[0_0_12px_rgba(16,185,129,0.1)]',
+                      glow: 'glow-emerald'
+                    },
+                    {
+                      id: 'Professional',
+                      label: 'Professional',
+                      sub: 'Business / Polite',
+                      icon: Briefcase,
+                      color: 'text-blue-400',
+                      borderActive: 'border-blue-500 bg-blue-500/5 shadow-[0_0_12px_rgba(59,130,246,0.1)]',
+                      glow: 'glow-blue'
+                    },
+                    {
+                      id: 'Urgency',
+                      label: 'Urgency',
+                      sub: 'FOMO / Scarcity',
+                      icon: Flame,
+                      color: 'text-rose-400',
+                      borderActive: 'border-rose-500 bg-rose-500/5 shadow-[0_0_12px_rgba(244,63,94,0.1)]',
+                      glow: 'glow-rose'
+                    }
+                  ].map((tone) => {
+                    const Icon = tone.icon;
+                    const isActive = brandTone === tone.id;
+                    return (
+                      <button
+                        key={tone.id}
+                        type="button"
+                        onClick={() => setBrandTone(tone.id)}
+                        className={`flex flex-col items-start p-2.5 rounded-xl border text-left transition-all duration-300 ${
+                          isActive 
+                            ? `${tone.borderActive} border-opacity-100` 
+                            : 'border-zinc-800 bg-[#121214] hover:bg-[#161619] hover:border-zinc-700'
+                        } ${tone.glow}`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <Icon className={`w-3.5 h-3.5 ${isActive ? tone.color : 'text-zinc-500'}`} />
+                          <span className={`text-[11px] font-bold ${isActive ? 'text-white' : 'text-zinc-400'}`}>
+                            {tone.label}
+                          </span>
+                        </div>
+                        <span className="text-[9px] text-zinc-500 leading-tight">
+                          {tone.sub}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="space-y-1">
+
+              <div className="space-y-1.5">
                 <label className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest">Promo Goal Notes</label>
                 <input 
                   type="text" 
                   placeholder="e.g. coupon VIP20 offering 20% off LTV"
                   value={copyNotes}
                   onChange={(e) => setCopyNotes(e.target.value)}
-                  className="w-full bg-[#121214] border border-zinc-850 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                  className="w-full bg-[#121214] border border-zinc-850 focus:border-blue-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none transition"
                 />
               </div>
             </div>
