@@ -387,25 +387,44 @@ router.get('/campaigns/:id/stats', async (req, res) => {
     let attributedOrders = 0;
     let revenueLift = 0;
 
-    
     const activeComms = comms.filter(c => 
       ['DELIVERED', 'OPENED', 'READ', 'CLICKED'].includes(c.status)
     );
 
-    for (const comm of activeComms) {
-      
-      const dispatchTime = new Date(comm.updated_at);
-      const windowEnd = new Date(dispatchTime.getTime() + 24 * 60 * 60 * 1000);
+    if (activeComms.length > 0) {
+      const customerIds = activeComms.map(c => c.customer_id);
+      const dispatchTimes = activeComms.map(c => new Date(c.updated_at).getTime());
+      const minTime = new Date(Math.min(...dispatchTimes));
+      const maxTime = new Date(Math.max(...dispatchTimes) + 24 * 60 * 60 * 1000);
 
-      const matchingOrders = await Order.find({
-        customer_id: comm.customer_id,
+      const orders = await Order.find({
+        customer_id: { $in: customerIds },
         status: 'COMPLETED',
-        created_at: { $gte: dispatchTime, $lte: windowEnd }
+        created_at: { $gte: minTime, $lte: maxTime }
       });
 
-      if (matchingOrders.length > 0) {
-        attributedOrders += matchingOrders.length;
-        revenueLift += matchingOrders.reduce((sum, o) => sum + o.amount, 0);
+      const ordersByCustomer = {};
+      for (const order of orders) {
+        const cid = order.customer_id.toString();
+        if (!ordersByCustomer[cid]) ordersByCustomer[cid] = [];
+        ordersByCustomer[cid].push(order);
+      }
+
+      for (const comm of activeComms) {
+        const cid = comm.customer_id.toString();
+        const customerOrders = ordersByCustomer[cid] || [];
+        const dispatchTime = new Date(comm.updated_at).getTime();
+        const windowEnd = dispatchTime + 24 * 60 * 60 * 1000;
+
+        const matchingOrders = customerOrders.filter(o => {
+          const oTime = new Date(o.created_at).getTime();
+          return oTime >= dispatchTime && oTime <= windowEnd;
+        });
+
+        if (matchingOrders.length > 0) {
+          attributedOrders += matchingOrders.length;
+          revenueLift += matchingOrders.reduce((sum, o) => sum + o.amount, 0);
+        }
       }
     }
 
@@ -619,19 +638,40 @@ router.get('/analytics/dashboard', async (req, res) => {
         ['DELIVERED', 'OPENED', 'READ', 'CLICKED'].includes(c.status)
       );
 
-      for (const comm of activeComms) {
-        const dispatchTime = new Date(comm.updated_at);
-        const windowEnd = new Date(dispatchTime.getTime() + 24 * 60 * 60 * 1000);
+      if (activeComms.length > 0) {
+        const customerIds = activeComms.map(c => c.customer_id);
+        const dispatchTimes = activeComms.map(c => new Date(c.updated_at).getTime());
+        const minTime = new Date(Math.min(...dispatchTimes));
+        const maxTime = new Date(Math.max(...dispatchTimes) + 24 * 60 * 60 * 1000);
 
-        const matchingOrders = await Order.find({
-          customer_id: comm.customer_id,
+        const orders = await Order.find({
+          customer_id: { $in: customerIds },
           status: 'COMPLETED',
-          created_at: { $gte: dispatchTime, $lte: windowEnd }
+          created_at: { $gte: minTime, $lte: maxTime }
         });
 
-        if (matchingOrders.length > 0) {
-          attributedOrders += matchingOrders.length;
-          revenueLift += matchingOrders.reduce((sum, o) => sum + o.amount, 0);
+        const ordersByCustomer = {};
+        for (const order of orders) {
+          const cid = order.customer_id.toString();
+          if (!ordersByCustomer[cid]) ordersByCustomer[cid] = [];
+          ordersByCustomer[cid].push(order);
+        }
+
+        for (const comm of activeComms) {
+          const cid = comm.customer_id.toString();
+          const customerOrders = ordersByCustomer[cid] || [];
+          const dispatchTime = new Date(comm.updated_at).getTime();
+          const windowEnd = dispatchTime + 24 * 60 * 60 * 1000;
+
+          const matchingOrders = customerOrders.filter(o => {
+            const oTime = new Date(o.created_at).getTime();
+            return oTime >= dispatchTime && oTime <= windowEnd;
+          });
+
+          if (matchingOrders.length > 0) {
+            attributedOrders += matchingOrders.length;
+            revenueLift += matchingOrders.reduce((sum, o) => sum + o.amount, 0);
+          }
         }
       }
 
