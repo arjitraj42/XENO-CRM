@@ -432,6 +432,68 @@ router.get('/campaigns/:id/stats', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+router.post('/receipts', async (req, res) => {
+  try {
+    const { comm_id, status, timestamp, error_message } = req.body;
+    if (!comm_id || !status) {
+      return res.status(400).json({ error: 'Missing comm_id or status in callback' });
+    }
+
+    const communication = await Communication.findOne({ id: comm_id });
+    if (!communication) {
+      return res.status(404).json({ error: `Communication receipt ${comm_id} not found` });
+    }
+
+    const statusPriority = { 'QUEUED': 0, 'SENT': 1, 'FAILED': 1, 'DELIVERED': 2, 'OPENED': 3, 'READ': 4, 'CLICKED': 5 };
+    const currentPriority = statusPriority[communication.status] || 0;
+    const incomingPriority = statusPriority[status] || 0;
+
+    if (incomingPriority <= currentPriority && communication.status !== 'QUEUED') {
+      return res.status(200).json({ success: true, message: 'Duplicate callback ignored' });
+    }
+
+    communication.status = status;
+    if (error_message) communication.error_message = error_message;
+    await communication.save();
+
+    if (status === 'CLICKED' && Math.random() < 0.6) {
+      const categories = ['Electronics', 'Apparel', 'Beauty', 'Home & Kitchen', 'Books', 'Groceries'];
+      const amount = Math.floor(Math.random() * 8000) + 500;
+      const orderId = `ord_camp_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+      const newOrder = new Order({
+        id: orderId,
+        customer_id: communication.customer_id,
+        amount,
+        status: 'COMPLETED',
+        channel: 'Campaign',
+        product_category: categories[Math.floor(Math.random() * categories.length)],
+        created_at: new Date()
+      });
+      await newOrder.save();
+      const customer = await Customer.findOne({ id: communication.customer_id });
+      if (customer) {
+        customer.lifetime_value = (customer.lifetime_value || 0) + amount;
+        customer.last_purchase_at = new Date();
+        await customer.save();
+      }
+    }
+
+    broadcastUpdate('COMMUNICATION_STATUS_UPDATE', {
+      comm_id,
+      campaign_id: communication.campaign_id,
+      status,
+      updated_at: communication.updated_at
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('[Webhook] Error processing callback:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post('/ai/segment', async (req, res) => {
   try {
     const { description } = req.body;
