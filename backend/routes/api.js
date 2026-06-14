@@ -8,6 +8,7 @@ const { translateTextToFilter, draftCampaignMessage, generateCampaignSummary, ge
 let sseClients = [];
 
 
+// [SSE Connection]: Bina baar-baar api hit kiye, real-time updates front-end pe send karne ke liye server connection.
 router.get('/events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -392,6 +393,7 @@ router.get('/campaigns/:id/stats', async (req, res) => {
     );
 
     if (activeComms.length > 0) {
+      // [Optimization]: Har client pe loop chala ke query krne k badle, pure batch ke orders ek hi query me fetch kar ke memory me filter kar rhe h taaki latency kam ho.
       const customerIds = activeComms.map(c => c.customer_id);
       const dispatchTimes = activeComms.map(c => new Date(c.updated_at).getTime());
       const minTime = new Date(Math.min(...dispatchTimes));
@@ -578,6 +580,7 @@ router.post('/ai/chat', async (req, res) => {
 });
 
 
+// [Dashboard Analytics]: Dashboard ke sare graphs aur metrics (revenue, signup growth, pie chart split) calculate krne wala main api.
 router.get('/analytics/dashboard', async (req, res) => {
   try {
     const now = new Date();

@@ -480,6 +480,7 @@ export default function App() {
 }
 
 
+// [Dashboard Component]: Main dashboard view ka UI component. Yahan pe key metrics, graphs aur campaign stats trigger handles define hai.
 function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, onTriggerSegment, onSelectCustomer, onNavigate }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [stats, setStats] = useState(null);
