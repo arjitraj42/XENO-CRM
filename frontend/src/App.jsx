@@ -669,7 +669,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       <XAxis dataKey="_id" stroke="#52525b" fontSize={10} tickLine={false} />
                       <YAxis stroke="#52525b" fontSize={10} tickLine={false} tickFormatter={(val) => `₹${val}`} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
                         itemStyle={{ color: '#fff' }}
                         labelClassName="text-[10px] text-zinc-500 font-mono"
                       />
@@ -689,7 +689,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       <XAxis dataKey="month" stroke="#52525b" fontSize={10} tickLine={false} />
                       <YAxis stroke="#52525b" fontSize={10} tickLine={false} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
                         itemStyle={{ color: '#fff' }}
                         labelClassName="text-[10px] text-zinc-500 font-mono"
                       />
@@ -735,7 +735,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       ))}
                     </Pie>
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px' }}
+                      contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
                       itemStyle={{ color: '#fff' }}
                     />
                   </PieChart>
@@ -967,7 +967,7 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                     <BarChart data={funnelData} layout="vertical" margin={{ left: -15, right: 10, top: 0, bottom: 0 }}>
                       <XAxis type="number" hide />
                       <YAxis dataKey="name" type="category" width={80} stroke="#71717a" fontSize={10} tickLine={false} />
-                      <Tooltip cursor={{ fill: 'rgba(59, 130, 246, 0.03)' }} contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px' }} />
+                      <Tooltip cursor={{ fill: 'rgba(59, 130, 246, 0.03)' }} contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }} />
                       <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={12} />
                     </BarChart>
                   </ResponsiveContainer>
