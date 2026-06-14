@@ -61,7 +61,7 @@ class QueueManager {
         return;
       }
 
-      const channelServiceUrl = process.env.CHANNEL_SERVICE_URL || 'http://localhost:5001';
+      const channelServiceUrl = process.env.CRM_BACKEND_URL || 'http://localhost:5000';
       const callbackUrl = `${process.env.CRM_BACKEND_URL || 'http://localhost:5000'}/api/receipts`;
 
       
