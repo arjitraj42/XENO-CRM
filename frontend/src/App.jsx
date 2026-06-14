@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  AreaChart, Area, PieChart, Pie, Cell, LineChart, Line
+  AreaChart, Area, PieChart, Pie, Cell, LineChart, Line, LabelList
 } from 'recharts';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
@@ -669,8 +669,8 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       <XAxis dataKey="_id" stroke="#52525b" fontSize={10} tickLine={false} />
                       <YAxis stroke="#52525b" fontSize={10} tickLine={false} tickFormatter={(val) => `₹${val}`} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
-                        itemStyle={{ color: '#fff' }}
+                        contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '12px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} labelStyle={{ color: '#475569', fontWeight: 'bold' }}
+                        itemStyle={{ color: '#0f172a' }}
                         labelClassName="text-[10px] text-zinc-500 font-mono"
                       />
                       <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue" />
@@ -689,8 +689,8 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       <XAxis dataKey="month" stroke="#52525b" fontSize={10} tickLine={false} />
                       <YAxis stroke="#52525b" fontSize={10} tickLine={false} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
-                        itemStyle={{ color: '#fff' }}
+                        contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '12px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} labelStyle={{ color: '#475569', fontWeight: 'bold' }}
+                        itemStyle={{ color: '#0f172a' }}
                         labelClassName="text-[10px] text-zinc-500 font-mono"
                       />
                       <Line type="monotone" dataKey="totalAudience" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, stroke: '#8b5cf6', strokeWidth: 2, fill: '#09090b' }} name="Total Contacts" />
@@ -735,8 +735,8 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                       ))}
                     </Pie>
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }}
-                      itemStyle={{ color: '#fff' }}
+                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '12px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} labelStyle={{ color: '#475569', fontWeight: 'bold' }}
+                      itemStyle={{ color: '#0f172a' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -964,11 +964,29 @@ function DashboardView({ campaigns, analyticsData, loadingAnalytics, showToast, 
                 <h4 className="text-xs font-bold text-zinc-200 border-b border-zinc-850 pb-2">{selectedCampaign.name}</h4>
                 <div className="h-44">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={funnelData} layout="vertical" margin={{ left: -15, right: 10, top: 0, bottom: 0 }}>
+                    <BarChart data={funnelData} layout="vertical" margin={{ left: -15, right: 30, top: 0, bottom: 0 }}>
                       <XAxis type="number" hide />
-                      <YAxis dataKey="name" type="category" width={80} stroke="#71717a" fontSize={10} tickLine={false} />
-                      <Tooltip cursor={{ fill: 'rgba(59, 130, 246, 0.03)' }} contentStyle={{ backgroundColor: '#121214', borderColor: '#27272a', borderRadius: '12px', color: '#f4f4f5' }} labelStyle={{ color: '#a1a1aa' }} />
-                      <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={12} />
+                      <YAxis 
+                        dataKey="name" 
+                        type="category" 
+                        width={110} 
+                        stroke="#475569" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        tickFormatter={(name) => {
+                          const item = funnelData.find(d => d.name === name);
+                          return item ? `${item.name}: ${item.value.toLocaleString()}` : name;
+                        }}
+                      />
+                      <Tooltip 
+                        cursor={{ fill: 'rgba(59, 130, 246, 0.03)' }} 
+                        contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '12px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} 
+                        labelStyle={{ color: '#475569', fontWeight: 'bold' }} 
+                        itemStyle={{ color: '#0f172a' }}
+                      />
+                      <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={12}>
+                        <LabelList dataKey="value" position="right" style={{ fill: '#475569', fontSize: 10, fontWeight: '600' }} offset={8} />
+                      </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
