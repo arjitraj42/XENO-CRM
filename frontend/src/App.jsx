@@ -12,7 +12,7 @@ import {
   AreaChart, Area, PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 const CHART_COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f59e0b', '#06b6d4'];
 
 export default function App() {
