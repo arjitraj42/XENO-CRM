@@ -8,7 +8,7 @@ function getGeminiModel() {
   }
   try {
     const ai = new GoogleGenerativeAI(apiKey);
-    return ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    return ai.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
   } catch (error) {
     console.error('Failed to initialize Gemini API:', error);
     return null;
